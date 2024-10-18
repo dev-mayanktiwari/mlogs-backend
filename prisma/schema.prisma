@@ -1,0 +1,100 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  userId              String               @id @default(uuid())
+  name                String
+  email               String               @unique
+  password            String
+  lastLoginAt         DateTime?
+  likedPosts          Like[]
+  comments            Comment[]
+  savedPosts          SavedPost[]
+  accountConfirmation AccountConfirmation?
+  refreshToken        RefreshToken?
+  passwordRecovery    PasswordRecovery[]
+
+  @@index([email])
+}
+
+model Post {
+  postId       Int         @id @default(autoincrement())
+  title        String
+  content      String
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  authorName   String
+  likes        Like[]
+  comments     Comment[]
+  savedByUsers SavedPost[]
+}
+
+model Like {
+  userId    String
+  user      User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  postId    Int
+  post      Post     @relation(fields: [postId], references: [postId], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@id([userId, postId])
+}
+
+model Comment {
+  commentId Int      @id @default(autoincrement())
+  userId    String
+  user      User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  postId    Int
+  post      Post     @relation(fields: [postId], references: [postId], onDelete: Cascade)
+  text      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SavedPost {
+  userId String
+  user   User   @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  postId Int
+  post   Post   @relation(fields: [postId], references: [postId], onDelete: Cascade)
+
+  @@id([userId, postId])
+}
+
+model AccountConfirmation {
+  accountId  Int      @id @default(autoincrement())
+  token      String
+  code       String
+  isVerified Boolean
+  timestamp  DateTime
+  userId     String   @unique
+  user       User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
+}
+
+model PasswordRecovery {
+  recoverId   Int       @id @default(autoincrement())
+  token       String?
+  expiry      DateTime?
+  lastResetAt DateTime?
+  userId      String
+  user        User      @relation(fields: [userId], references: [userId], onDelete: Cascade)
+}
+
+model RefreshToken {
+  refreshTokenId Int      @id @default(autoincrement())
+  token          String
+  userId         String   @unique
+  user           User     @relation(fields: [userId], references: [userId])
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
