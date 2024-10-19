@@ -1,4 +1,4 @@
-export const enum ResponseMessage {
+export const enum EResponseMessage {
   USER_CREATED = "User account created successfully.",
   DATA_RETRIEVED = "Data retrieved successfully.",
   OPERATION_COMPLETED = "Operation completed successfully.",
@@ -15,6 +15,12 @@ export const enum ResponseMessage {
   FORBIDDEN = "Forbidden request.",
   VALIDATION_ERROR = "Validation error.",
   SESSION_EXPIRED = "Session expired. Please log in again.",
-  TOO_MANY_REQUESTS = "Too many requests. Please try again later."
+  TOO_MANY_REQUESTS = "Too many requests. Please try again later.",
+  USERNAME_TAKEN = "Username is already taken.",
 }
 
+export const MIN_LENGTH_MESSAGE = (entity: string, length: number) => `${entity} must be ${length} characters long.`;
+
+export const MAX_LENGTH_MESSAGE = (entity: string, length: number) => `${entity} must be at most ${length} characters long.`;
+
+export const ENTITY_EXISTS = (entity: string) => `${entity} already exists.`;

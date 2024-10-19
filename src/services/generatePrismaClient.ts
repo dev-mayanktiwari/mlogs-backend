@@ -1,12 +1,12 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+ 
+ 
 import { PrismaClient } from "@prisma/client";
 import { AppConfig } from "../config";
 
 let prisma: PrismaClient;
 
 declare global {
-  // eslint-disable-next-line no-var, @typescript-eslint/no-redundant-type-constituents
+  // eslint-disable-next-line no-var
   var __prisma: PrismaClient | undefined;
 }
 

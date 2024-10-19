@@ -1,7 +1,7 @@
 import { Router } from "express";
-import apiController from "../controller/apiController";
+import authRouter from "../controller/auth.controller";
 const router = Router();
 
-router.route("/self").get(apiController.self);
-router.route("/health").get(apiController.health);
+router.post("/register", authRouter.register);
+
 export default router;

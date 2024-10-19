@@ -3,7 +3,7 @@ import { AppConfig } from "../config";
 import { EApplicationEnvirontment, EErrorStatusCode } from "../constant/application";
 import { rateLimiterMongo } from "../config/rateLimiter";
 import httpError from "../utils/httpError";
-import { ResponseMessage } from "../constant/responseMessage";
+import { EResponseMessage } from "../constant/responseMessage";
 
 export default (req: Request, _: Response, next: NextFunction) => {
   if (AppConfig.get("ENV") === EApplicationEnvirontment.DEVELOPMENT) {
@@ -16,7 +16,7 @@ export default (req: Request, _: Response, next: NextFunction) => {
         next();
       })
       .catch(() => {
-        return httpError(next, new Error(ResponseMessage.TOO_MANY_REQUESTS), req, EErrorStatusCode.TOO_MANY_REQUESTS);
+        return httpError(next, new Error(EResponseMessage.TOO_MANY_REQUESTS), req, EErrorStatusCode.TOO_MANY_REQUESTS);
       });
   }
 };

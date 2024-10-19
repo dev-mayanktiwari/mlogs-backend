@@ -1,5 +1,11 @@
+ 
+ 
+ 
 import os from "os";
+import bcrypt from "bcryptjs";
 import { AppConfig } from "../config";
+import { v4 } from "uuid";
+import { randomInt } from "crypto";
 
 export default {
   getSystemHealth: () => {
@@ -18,5 +24,15 @@ export default {
         usedHeap: `${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)} MB`
       }
     };
+  },
+  hashPassword: (password: string) => {
+    return bcrypt.hash(password, 10);
+  },
+  generateRandomToken: () => v4(),
+  generateOTP: (digits: number = 6) => {
+    const min = Math.pow(10, digits - 1);
+    const max = Math.pow(10, digits) - 1;
+    return randomInt(min, max).toString();
   }
 };
+

@@ -17,6 +17,7 @@ model User {
   userId              String               @id @default(uuid())
   name                String
   email               String               @unique
+  username            String               @unique
   password            String
   lastLoginAt         DateTime?
   likedPosts          Like[]
@@ -27,6 +28,7 @@ model User {
   passwordRecovery    PasswordRecovery[]
 
   @@index([email])
+  @@index([username])
 }
 
 model Post {
@@ -76,7 +78,7 @@ model AccountConfirmation {
   token      String
   code       String
   isVerified Boolean
-  timestamp  DateTime
+  timestamp  DateTime?
   userId     String   @unique
   user       User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
 }

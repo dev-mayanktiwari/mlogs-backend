@@ -29,3 +29,11 @@ export const enum EErrorStatusCode {
   GATEWAY_TIMEOUT = 504 // Upstream server timed out
 }
 
+export enum EUserTypeConstants {
+  MIN_PASSWORD_LENGTH = 8,
+  MAX_PASSWORD_LENGTH = 25,
+  MIN_USERNAME_LENGTH = 5,
+  MAX_USERNAME_LENGTH = 15,
+  MIN_NAME_LENGTH = 3,
+  MAX_NAME_LENGTH = 30
+}
