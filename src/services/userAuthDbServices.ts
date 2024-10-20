@@ -55,6 +55,9 @@ export default {
         }
       },
       select: {
+        userId: true,
+        username: true,
+        email: true,  
         accountConfirmation: true,
         password: false
       }

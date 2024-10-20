@@ -9,7 +9,7 @@ import { registerUserSchema } from "../types/userTypes";
 import userAuthDbServices from "../services/userAuthDbServices";
 import { ENTITY_EXISTS, EResponseMessage } from "../constant/responseMessage";
 import { IUserInterface } from "../types/userInterface";
-import { sendEmail } from "../services/sendEmailService";
+import { sendVerificationEmail, accountConfirmedEmail } from "../services/sendEmailService";
 import { IUser } from "../types/prismaUserTypes";
 
 interface IConfirmRequest extends Request {
@@ -74,7 +74,7 @@ export default {
       };
 
       // Send email to the user
-      await sendEmail(parsed.data.email, parsed.data.name, token, code);
+      await sendVerificationEmail(parsed.data.email, parsed.data.name, token, code);
 
       const newUser = await userAuthDbServices.createUser(payload);
 
@@ -103,7 +103,15 @@ export default {
       }
 
       // Confirm the account
-      const updatedUser = await userAuthDbServices.confirmAccount(user.userId as string);
+      if (!user.userId) {
+        return httpError(next, new Error(EResponseMessage.USER_ID_NOT_FOUND), req, EErrorStatusCode.INTERNAL_SERVER_ERROR);
+      }
+      const updatedUser = await userAuthDbServices.confirmAccount(user.userId);
+
+      // Send account confirmed email
+      await accountConfirmedEmail(updatedUser.email, updatedUser.name);
+
+      // Return response
       httpResponse(req, res, EResponseStatusCode.OK, "Account confirmed successfully", { user: updatedUser });
     } catch (error) {
       httpError(next, error, req);

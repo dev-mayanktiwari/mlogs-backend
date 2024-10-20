@@ -18,7 +18,8 @@ export const enum EResponseMessage {
   TOO_MANY_REQUESTS = "Too many requests. Please try again later.",
   USERNAME_TAKEN = "Username is already taken.",
   INVALID_TOKEN_CODE = "The verification link is invalid.",
-  ACCOUNT_ALREADY_VERIFIED = "Account is already verified."
+  ACCOUNT_ALREADY_VERIFIED = "Account is already verified.",
+  USER_ID_NOT_FOUND = "User ID not found."
 }
 
 export const MIN_LENGTH_MESSAGE = (entity: string, length: number) => `${entity} must be ${length} characters long.`;

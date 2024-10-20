@@ -1,18 +1,30 @@
 import { Queue } from "bullmq";
+import { AppConfig } from "../config";
 
 const emailQueue = new Queue("emailQueue", {
   connection: {
-    host: "localhost", // or your Redis host
-    port: 6379 // or your Redis port
+    host: AppConfig.get("REDIS_HOST") as string, 
+    port: Number(AppConfig.get("REDIS_PORT"))
   }
 });
 
-// Function to add a job to the email queue
-export const sendEmail = async (email: string, name: string, token: string, code: string) => {
-  await emailQueue.add("sendEmail", {
+export const sendVerificationEmail = async (email: string, name: string, token: string, code: string) => {
+  await emailQueue.add("sendVerificationEmail", {
     email,
     name,
     token,
     code
   });
 };
+
+export const accountConfirmedEmail = async (email: string, name: string) => {
+  await emailQueue.add(
+    "sendAccountConfirmedEmail",
+    {
+      email,
+      name
+    },
+    { priority: 3 }
+  );
+};
+
