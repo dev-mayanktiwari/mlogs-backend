@@ -1,7 +1,7 @@
  
  
  
- 
+
 import { IUserInterface } from "../types/userInterface";
 import prisma from "./generatePrismaClient";
 

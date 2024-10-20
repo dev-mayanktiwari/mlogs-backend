@@ -1,3 +1,5 @@
+ 
+ 
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { NextFunction, Request, Response } from "express";
 import httpResponse from "../utils/httpResponse";
@@ -9,6 +11,7 @@ import { registerUserSchema } from "../types/userTypes";
 import userAuthDbServices from "../services/userAuthDbServices";
 import { ENTITY_EXISTS, EResponseMessage } from "../constant/responseMessage";
 import { IUserInterface } from "../types/userInterface";
+import { sendEmail } from "../services/sendEmailService";
 
 export default {
   self: (req: Request, res: Response, next: NextFunction) => {
@@ -62,6 +65,9 @@ export default {
           timestamp: null
         }
       };
+
+      // Send email to the user
+      await sendEmail(parsed.data.email, parsed.data.name, token, code);
 
       const newUser = await userAuthDbServices.createUser(payload);
 
