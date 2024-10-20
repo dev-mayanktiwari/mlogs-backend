@@ -5,12 +5,13 @@ import { EErrorStatusCode, EResponseStatusCode } from "../constant/application";
 import httpError from "../utils/httpError";
 import quicker from "../utils/quicker";
 import moment from "moment";
-import { registerUserSchema } from "../types/userTypes";
+import { loginUserSchema, registerUserSchema } from "../types/userTypes";
 import userAuthDbServices from "../services/userAuthDbServices";
 import { ENTITY_EXISTS, EResponseMessage } from "../constant/responseMessage";
 import { IUserInterface } from "../types/userInterface";
 import { sendVerificationEmail, accountConfirmedEmail } from "../services/sendEmailService";
 import { IUser } from "../types/prismaUserTypes";
+import { AppConfig } from "../config";
 
 interface IConfirmRequest extends Request {
   params: {
@@ -113,6 +114,82 @@ export default {
 
       // Return response
       httpResponse(req, res, EResponseStatusCode.OK, "Account confirmed successfully", { user: updatedUser });
+    } catch (error) {
+      httpError(next, error, req);
+    }
+  },
+  login: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { body } = req;
+      // Validate the request body
+      const parsed = loginUserSchema.safeParse(body);
+      if (!parsed.success) {
+        const errorMessage = parsed.error?.issues.map((issue) => issue.message).join(", ");
+        return httpError(next, new Error(errorMessage || "Invalid inputs"), req, EErrorStatusCode.BAD_REQUEST);
+      }
+
+      // Check if user exists
+      const user: IUser | null = await userAuthDbServices.findUserByEmailOrUsername(parsed.data.email);
+
+      if (!user) {
+        return httpError(next, new Error(EResponseMessage.INVALID_CREDENTIALS), req, EErrorStatusCode.UNAUTHORIZED);
+      }
+
+      // Check if password matches
+      const isPasswordMatch = await quicker.comparePassword(parsed.data.password, user.password as string);
+
+      if (!isPasswordMatch) {
+        return httpError(next, new Error(EResponseMessage.INVALID_CREDENTIALS), req, EErrorStatusCode.UNAUTHORIZED);
+      }
+
+      //Generate JWT token
+      const accessToken = quicker.generateToken(
+        {
+          userId: user.userId,
+          email: user.email,
+          username: user.username
+        },
+        AppConfig.get("ACCESS_TOKEN_SECRET") as string,
+        AppConfig.get("ACCESS_TOKEN_EXPIRY") as string
+      );
+
+      const refreshToken = quicker.generateToken(
+        {
+          userId: user.userId,
+          email: user.email,
+          username: user.username
+        },
+        AppConfig.get("REFRESH_TOKEN_SECRET") as string,
+        AppConfig.get("REFRESH_TOKEN_EXPIRY") as string
+      );
+
+      // Update last login
+      await userAuthDbServices.updateUserLastLogin(user.userId as string);
+
+      // Set Cookie
+      res
+        .cookie("accessToken", accessToken, {
+          path: "/api/v1",
+          domain: AppConfig.get("DOMAIN") as string,
+          sameSite: "strict",
+          httpOnly: true,
+          secure: !(AppConfig.get("ENV") === "development"),
+          maxAge: AppConfig.get("ACCESS_TOKEN_EXPIRY") as number
+        })
+        .cookie("refreshToken", refreshToken, {
+          path: "/api/v1",
+          domain: AppConfig.get("DOMAIN") as string,
+          sameSite: "strict",
+          httpOnly: true,
+          secure: !(AppConfig.get("ENV") === "development"),
+          maxAge: AppConfig.get("REFRESH_TOKEN_EXPIRY") as number
+        });
+
+      // Return response
+      httpResponse(req, res, EResponseStatusCode.OK, EResponseMessage.LOGIN_SUCCESS, {
+        accessToken: `Bearer ${accessToken}`,
+        refreshToken: `Bearer ${refreshToken}`
+      });
     } catch (error) {
       httpError(next, error, req);
     }

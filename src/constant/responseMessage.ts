@@ -19,7 +19,8 @@ export const enum EResponseMessage {
   USERNAME_TAKEN = "Username is already taken.",
   INVALID_TOKEN_CODE = "The verification link is invalid.",
   ACCOUNT_ALREADY_VERIFIED = "Account is already verified.",
-  USER_ID_NOT_FOUND = "User ID not found."
+  USER_ID_NOT_FOUND = "User ID not found.",
+  INVALID_CREDENTIALS = "Invalid credentials."
 }
 
 export const MIN_LENGTH_MESSAGE = (entity: string, length: number) => `${entity} must be ${length} characters long.`;
@@ -27,3 +28,4 @@ export const MIN_LENGTH_MESSAGE = (entity: string, length: number) => `${entity}
 export const MAX_LENGTH_MESSAGE = (entity: string, length: number) => `${entity} must be at most ${length} characters long.`;
 
 export const ENTITY_EXISTS = (entity: string) => `${entity} already exists.`;
+

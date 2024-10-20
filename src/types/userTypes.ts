@@ -19,7 +19,7 @@ export const registerUserSchema = z.object({
 });
 
 export const loginUserSchema = z.object({
-  emailorUsername: z.string(),
+  email: z.string(),
   password: z
     .string()
     .min(EUserTypeConstants.MIN_PASSWORD_LENGTH, MIN_LENGTH_MESSAGE("Password", EUserTypeConstants.MIN_PASSWORD_LENGTH))

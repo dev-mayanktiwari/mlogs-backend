@@ -1,7 +1,18 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-type ConfigKeys = "PORT" | "DATABASE_URL" | "SERVER_URL" | "ENV" | "REDIS_PORT" | "REDIS_HOST";
+type ConfigKeys =
+  | "PORT"
+  | "DATABASE_URL"
+  | "SERVER_URL"
+  | "ENV"
+  | "REDIS_PORT"
+  | "REDIS_HOST"
+  | "ACCESS_TOKEN_SECRET"
+  | "REFRESH_TOKEN_SECRET"
+  | "ACCESS_TOKEN_EXPIRY"
+  | "REFRESH_TOKEN_EXPIRY"
+  | "DOMAIN";
 
 const _config: Record<ConfigKeys, string | undefined> = {
   PORT: process.env.PORT,
@@ -9,7 +20,12 @@ const _config: Record<ConfigKeys, string | undefined> = {
   SERVER_URL: process.env.SERVER_URL,
   ENV: process.env.ENV,
   REDIS_PORT: process.env.REDIS_PORT,
-  REDIS_HOST: process.env.REDIS_HOST
+  REDIS_HOST: process.env.REDIS_HOST,
+  ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET,
+  REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET,
+  ACCESS_TOKEN_EXPIRY: process.env.ACCESS_TOKEN_EXPIRY,
+  REFRESH_TOKEN_EXPIRY: process.env.REFRESH_TOKEN_EXPIRY,
+  DOMAIN: process.env.DOMAIN
 };
 
 export const AppConfig = {
@@ -19,7 +35,7 @@ export const AppConfig = {
       process.exit(1);
     }
 
-    if (key === "PORT") {
+    if (key === "PORT" || key === "REDIS_PORT") {
       return Number(value);
     }
 

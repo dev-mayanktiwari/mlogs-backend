@@ -1,11 +1,9 @@
- 
- 
- 
 import os from "os";
-import bcrypt from "bcryptjs";
+import bcrypt, { compare } from "bcryptjs";
 import { AppConfig } from "../config";
 import { v4 } from "uuid";
 import { randomInt } from "crypto";
+import jwt, { SignOptions } from "jsonwebtoken";
 
 export default {
   getSystemHealth: () => {
@@ -33,6 +31,14 @@ export default {
     const min = Math.pow(10, digits - 1);
     const max = Math.pow(10, digits) - 1;
     return randomInt(min, max).toString();
+  },
+  comparePassword: (password: string, hashedPassword: string) => {
+    return compare(password, hashedPassword);
+  },
+  generateToken: (payload: object, secret: string, expiry: string) => {
+    const options: SignOptions = { expiresIn: expiry };
+    const loginToken = jwt.sign(payload, secret, options);
+    return loginToken;
   }
 };
 

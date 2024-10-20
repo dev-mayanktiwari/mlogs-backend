@@ -57,7 +57,7 @@ export default {
       select: {
         userId: true,
         username: true,
-        email: true,  
+        email: true,
         accountConfirmation: true,
         password: false
       }
@@ -85,6 +85,30 @@ export default {
     });
 
     return updatedUser;
+  },
+
+  findUserByEmailOrUsername: async (key: string) => {
+    const user = await prisma.user.findFirst({
+      where: {
+        OR: [{ email: key }, { username: key }],
+        accountConfirmation: {
+          isVerified: true
+        }
+      }
+    });
+
+    return user;
+  },
+
+  updateUserLastLogin: (id: string) => {
+    return prisma.user.update({
+      where: {
+        userId: id
+      },
+      data: {
+        lastLoginAt: moment.utc().toISOString()
+      }
+    });
   }
 };
 
