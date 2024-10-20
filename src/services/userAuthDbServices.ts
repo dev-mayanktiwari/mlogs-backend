@@ -109,6 +109,19 @@ export default {
         lastLoginAt: moment.utc().toISOString()
       }
     });
+  },
+
+  updateRefreshToken: (id: string, refreshToken: string) => {
+    return prisma.refreshToken.create({
+      data: {
+        token: refreshToken,
+        user: {
+          connect: {
+            userId: id
+          }
+        }
+      }
+    });
   }
 };
 

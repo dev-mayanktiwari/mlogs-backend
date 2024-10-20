@@ -163,8 +163,9 @@ export default {
         AppConfig.get("REFRESH_TOKEN_EXPIRY") as string
       );
 
-      // Update last login
+      // Update last login and refresh token
       await userAuthDbServices.updateUserLastLogin(user.userId as string);
+      await userAuthDbServices.updateRefreshToken(user.userId as string, refreshToken);
 
       // Set Cookie
       res
