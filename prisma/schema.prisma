@@ -74,13 +74,15 @@ model SavedPost {
 }
 
 model AccountConfirmation {
-  accountId  Int      @id @default(autoincrement())
+  accountId  Int       @id @default(autoincrement())
   token      String
   code       String
   isVerified Boolean
   timestamp  DateTime?
-  userId     String   @unique
-  user       User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  userId     String    @unique
+  user       User      @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@unique([token, code])
 }
 
 model PasswordRecovery {

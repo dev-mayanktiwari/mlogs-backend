@@ -1,5 +1,3 @@
- 
- 
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { NextFunction, Request, Response } from "express";
 import httpResponse from "../utils/httpResponse";
@@ -12,7 +10,16 @@ import userAuthDbServices from "../services/userAuthDbServices";
 import { ENTITY_EXISTS, EResponseMessage } from "../constant/responseMessage";
 import { IUserInterface } from "../types/userInterface";
 import { sendEmail } from "../services/sendEmailService";
+import { IUser } from "../types/prismaUserTypes";
 
+interface IConfirmRequest extends Request {
+  params: {
+    token: string;
+  };
+  query: {
+    code: string;
+  };
+}
 export default {
   self: (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -61,8 +68,8 @@ export default {
         accountConfirmation: {
           token,
           code,
-          isVerified: false,
-          timestamp: null
+          timestamp: null,
+          isVerified: false
         }
       };
 
@@ -72,6 +79,32 @@ export default {
       const newUser = await userAuthDbServices.createUser(payload);
 
       httpResponse(req, res, EResponseStatusCode.CREATED, "User registered successfully", newUser);
+    } catch (error) {
+      httpError(next, error, req);
+    }
+  },
+
+  confirmation: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { params, query } = req as IConfirmRequest;
+      const { token } = params;
+      const { code } = query;
+
+      // Fetch User by token and code
+      const user: IUser | null = await userAuthDbServices.findUserByTokenAndCode({ token, code });
+
+      if (!user) {
+        return httpError(next, new Error(EResponseMessage.INVALID_TOKEN_CODE), req, EErrorStatusCode.UNAUTHORIZED);
+      }
+
+      // Check if account is already confirmed
+      if (user.accountConfirmation?.isVerified) {
+        return httpError(next, new Error(EResponseMessage.ACCOUNT_ALREADY_VERIFIED), req, EErrorStatusCode.BAD_REQUEST);
+      }
+
+      // Confirm the account
+      const updatedUser = await userAuthDbServices.confirmAccount(user.userId as string);
+      httpResponse(req, res, EResponseStatusCode.OK, "Account confirmed successfully", { user: updatedUser });
     } catch (error) {
       httpError(next, error, req);
     }

@@ -1,7 +1,7 @@
 export interface IUserInterface {
   name: string;
-  email: string;
   username: string;
+  email: string;
   password: string;
   accountConfirmation: {
     token: string;

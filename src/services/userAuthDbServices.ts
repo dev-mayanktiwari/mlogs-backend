@@ -1,7 +1,4 @@
- 
- 
- 
-
+import moment from "moment";
 import { IUserInterface } from "../types/userInterface";
 import prisma from "./generatePrismaClient";
 
@@ -13,6 +10,7 @@ export default {
       }
     });
   },
+
   findUserByUsername: (username: string) => {
     return prisma.user.findUnique({
       where: {
@@ -20,6 +18,7 @@ export default {
       }
     });
   },
+
   createUser: (payload: IUserInterface) => {
     return prisma.user.create({
       data: {
@@ -45,6 +44,44 @@ export default {
         // Remove accountConfirmation if not needed
       }
     });
+  },
+
+  findUserByTokenAndCode: (payload: { token: string; code: string }) => {
+    const user = prisma.user.findFirst({
+      where: {
+        accountConfirmation: {
+          token: payload.token,
+          code: payload.code
+        }
+      },
+      select: {
+        accountConfirmation: true,
+        password: false
+      }
+    });
+
+    return user;
+  },
+
+  confirmAccount: async (id: string) => {
+    const updatedUser = await prisma.user.update({
+      where: {
+        userId: id
+      },
+      data: {
+        accountConfirmation: {
+          update: {
+            isVerified: true,
+            timestamp: moment.utc().toISOString()
+          }
+        }
+      },
+      include: {
+        accountConfirmation: true
+      }
+    });
+
+    return updatedUser;
   }
 };
 
