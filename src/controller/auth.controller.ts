@@ -226,43 +226,39 @@ export default {
 
   logout: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      // Get cookie and user
       const { cookies } = req;
       const { authenticatedUser } = req as IAuthenticatedRequest;
-
-      // Get refresh token from cookie
       const { refreshToken } = cookies as { refreshToken: string | undefined };
 
-      // Clear token from database
+      // Utility function to clear cookies
+      const clearAuthCookies = () => {
+        const cookieOptions = {
+          path: "/api/v1",
+          domain: AppConfig.get("DOMAIN") as string,
+          sameSite: "strict" as const,
+          httpOnly: true,
+          secure: !(AppConfig.get("ENV") === "development"),
+          expires: new Date(0) // Expire immediately
+        };
+
+        res.clearCookie("accessToken", cookieOptions);
+        res.clearCookie("refreshToken", cookieOptions);
+      };
+
+      // Clear refresh token from database if present
       if (refreshToken) {
         await userAuthDbServices.deleteRefreshToken(authenticatedUser.userId as string);
       }
 
       // Clear cookies
-      res.clearCookie("accessToken", {
-        path: "/api/v1",
-        domain: AppConfig.get("DOMAIN") as string,
-        sameSite: "strict",
-        httpOnly: true,
-        secure: !(AppConfig.get("ENV") === "development"),
-        maxAge: AppConfig.get("ACCESS_TOKEN_EXPIRY") as number
-      });
+      clearAuthCookies();
 
-      res.clearCookie("refreshToken", {
-        path: "/api/v1",
-        domain: AppConfig.get("DOMAIN") as string,
-        sameSite: "strict",
-        httpOnly: true,
-        secure: !(AppConfig.get("ENV") === "development"),
-        maxAge: AppConfig.get("ACCESS_TOKEN_EXPIRY") as number
-      });
-
-      httpResponse(req, res, EResponseStatusCode.OK, "Hello World", { name: "John Doe" });
+      // Send response after successful logout
+      httpResponse(req, res, EResponseStatusCode.OK, EResponseMessage.LOGOUT_SUCCESS, {});
     } catch (error) {
-      httpError(next, error, req);
+      httpError(next, error, req, EErrorStatusCode.INTERNAL_SERVER_ERROR);
     }
   },
-
   refreshToken: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { cookies } = req;
@@ -272,36 +268,36 @@ export default {
         return httpError(next, new Error(EResponseMessage.NO_TOKEN_FOUND), req, EErrorStatusCode.UNAUTHORIZED);
       }
 
+      // Verify the refresh token
       const { userId, email, username } = quicker.verifyToken(refreshToken, AppConfig.get("REFRESH_TOKEN_SECRET") as string) as IDecryptedToken;
 
-      if (refreshToken) {
-        const dbRefreshToken = await userAuthDbServices.getRefreshToken(userId);
-        if (dbRefreshToken?.token != refreshToken) {
-          httpError(next, new Error(EResponseMessage.NO_SNIRFING), req, EErrorStatusCode.UNAUTHORIZED);
-        }
-        const accessToken = quicker.generateToken(
-          {
-            userId: userId,
-            email: email,
-            username: username
-          },
-          AppConfig.get("ACCESS_TOKEN_SECRET") as string,
-          AppConfig.get("ACCESS_TOKEN_EXPIRY") as string
-        );
-
-        res.cookie("accessToken", accessToken, {
-          path: "/api/v1",
-          domain: AppConfig.get("DOMAIN") as string,
-          sameSite: "strict",
-          httpOnly: true,
-          secure: !(AppConfig.get("ENV") === "development"),
-          maxAge: AppConfig.get("ACCESS_TOKEN_EXPIRY") as number
-        });
-
-        httpResponse(req, res, EResponseStatusCode.OK, EResponseMessage.LOGIN_SUCCESS, {
-          accessToken: `Bearer ${accessToken}`
-        });
+      // Check if refresh token in DB matches
+      const dbRefreshToken = await userAuthDbServices.getRefreshToken(userId);
+      if (!dbRefreshToken || dbRefreshToken.token !== refreshToken) {
+        return httpError(next, new Error(EResponseMessage.NO_SNIRFING), req, EErrorStatusCode.UNAUTHORIZED);
       }
+
+      // Generate new access token
+      const accessToken = quicker.generateToken(
+        { userId, email, username },
+        AppConfig.get("ACCESS_TOKEN_SECRET") as string,
+        AppConfig.get("ACCESS_TOKEN_EXPIRY") as string
+      );
+
+      // Set access token in cookies
+      res.cookie("accessToken", accessToken, {
+        path: "/api/v1",
+        domain: AppConfig.get("DOMAIN") as string,
+        sameSite: "strict",
+        httpOnly: true,
+        secure: !(AppConfig.get("ENV") === "development"),
+        maxAge: Number(AppConfig.get("ACCESS_TOKEN_EXPIRY")) // In milliseconds
+      });
+
+      // Send response
+      httpResponse(req, res, EResponseStatusCode.OK, EResponseMessage.LOGIN_SUCCESS, {
+        accessToken: `Bearer ${accessToken}`
+      });
     } catch (error) {
       httpError(next, error, req);
     }
