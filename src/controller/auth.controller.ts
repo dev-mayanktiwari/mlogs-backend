@@ -21,6 +21,11 @@ interface IConfirmRequest extends Request {
     code: string;
   };
 }
+
+interface IAuthenticatedRequest extends Request {
+  authenticatedUser: IUser;
+}
+
 export default {
   self: (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -204,6 +209,15 @@ export default {
         time: moment(new Date().toISOString()).format("YYYY-MM-DD HH:mm:ss")
       };
       httpResponse(req, res, EResponseStatusCode.OK, "Health Check", healthData);
+    } catch (error) {
+      httpError(next, error, req);
+    }
+  },
+
+  selfIdentification: (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { authenticatedUser } = req as IAuthenticatedRequest;
+      httpResponse(req, res, EResponseStatusCode.OK, EResponseMessage.USER_FOUND, authenticatedUser);
     } catch (error) {
       httpError(next, error, req);
     }

@@ -113,14 +113,35 @@ export default {
 
   updateRefreshToken: (id: string, refreshToken: string) => {
     return prisma.refreshToken.upsert({
-      where: { userId: id }, 
+      where: { userId: id },
       update: {
-        token: refreshToken, 
-        updatedAt: new Date() 
+        token: refreshToken,
+        updatedAt: new Date()
       },
       create: {
-        token: refreshToken, 
-        userId: id 
+        token: refreshToken,
+        userId: id
+      }
+    });
+  },
+
+  findUserById: (id: string) => {
+    return prisma.user.findUnique({
+      where: {
+        userId: id
+      },
+      select: {
+        userId: true,
+        name: true,
+        email: true,
+        username: true,
+        password: false,
+        accountConfirmation: true,
+        likedPosts: true,
+        comments: true,
+        savedPosts: true,
+        passwordRecovery: true,
+        refreshToken: true
       }
     });
   }

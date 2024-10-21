@@ -39,6 +39,9 @@ export default {
     const options: SignOptions = { expiresIn: expiry };
     const loginToken = jwt.sign(payload, secret, options);
     return loginToken;
+  },
+  verifyToken: (token: string, secret: string) => {
+    return jwt.verify(token, secret);
   }
 };
 

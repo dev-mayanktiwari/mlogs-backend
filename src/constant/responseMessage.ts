@@ -4,6 +4,7 @@ export const enum EResponseMessage {
   OPERATION_COMPLETED = "Operation completed successfully.",
   USER_UPDATED = "User profile updated successfully.",
   USER_DELETED = "User account deleted successfully.",
+  USER_FOUND = "User found.",
   LOGIN_SUCCESS = "Login successful.",
   LOGOUT_SUCCESS = "Logout successful.",
   PASSWORD_CHANGED = "Password changed successfully.",
