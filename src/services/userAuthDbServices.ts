@@ -112,14 +112,15 @@ export default {
   },
 
   updateRefreshToken: (id: string, refreshToken: string) => {
-    return prisma.refreshToken.create({
-      data: {
-        token: refreshToken,
-        user: {
-          connect: {
-            userId: id
-          }
-        }
+    return prisma.refreshToken.upsert({
+      where: { userId: id }, 
+      update: {
+        token: refreshToken, 
+        updatedAt: new Date() 
+      },
+      create: {
+        token: refreshToken, 
+        userId: id 
       }
     });
   }
