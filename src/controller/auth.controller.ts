@@ -221,6 +221,45 @@ export default {
     } catch (error) {
       httpError(next, error, req);
     }
+  },
+
+  logout: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      // Get cookie and user
+      const { cookies } = req;
+      const { authenticatedUser } = req as IAuthenticatedRequest;
+
+      // Get refresh token from cookie
+      const { refreshToken } = cookies as { refreshToken: string | undefined };
+
+      // Clear token from database
+      if (refreshToken) {
+        await userAuthDbServices.deleteRefreshToken(authenticatedUser.userId as string);
+      }
+
+      // Clear cookies
+      res.clearCookie("accessToken", {
+        path: "/api/v1",
+        domain: AppConfig.get("DOMAIN") as string,
+        sameSite: "strict",
+        httpOnly: true,
+        secure: !(AppConfig.get("ENV") === "development"),
+        maxAge: AppConfig.get("ACCESS_TOKEN_EXPIRY") as number
+      });
+
+      res.clearCookie("refreshToken", {
+        path: "/api/v1",
+        domain: AppConfig.get("DOMAIN") as string,
+        sameSite: "strict",
+        httpOnly: true,
+        secure: !(AppConfig.get("ENV") === "development"),
+        maxAge: AppConfig.get("ACCESS_TOKEN_EXPIRY") as number
+      });
+
+      httpResponse(req, res, EResponseStatusCode.OK, "Hello World", { name: "John Doe" });
+    } catch (error) {
+      httpError(next, error, req);
+    }
   }
 };
 

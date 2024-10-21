@@ -144,6 +144,14 @@ export default {
         refreshToken: true
       }
     });
+  },
+
+  deleteRefreshToken: (id: string) => {
+    return prisma.refreshToken.delete({
+      where: {
+        userId: id
+      }
+    });
   }
 };
 
