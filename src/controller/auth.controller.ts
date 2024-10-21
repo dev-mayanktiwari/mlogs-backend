@@ -12,6 +12,7 @@ import { IUserInterface } from "../types/userInterface";
 import { sendVerificationEmail, accountConfirmedEmail } from "../services/sendEmailService";
 import { IUser } from "../types/prismaUserTypes";
 import { AppConfig } from "../config";
+import { IDecryptedToken } from "../middleware/authentication";
 
 interface IConfirmRequest extends Request {
   params: {
@@ -257,6 +258,50 @@ export default {
       });
 
       httpResponse(req, res, EResponseStatusCode.OK, "Hello World", { name: "John Doe" });
+    } catch (error) {
+      httpError(next, error, req);
+    }
+  },
+
+  refreshToken: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { cookies } = req;
+      const { refreshToken } = cookies as { refreshToken: string | undefined };
+
+      if (!refreshToken) {
+        return httpError(next, new Error(EResponseMessage.NO_TOKEN_FOUND), req, EErrorStatusCode.UNAUTHORIZED);
+      }
+
+      const { userId, email, username } = quicker.verifyToken(refreshToken, AppConfig.get("REFRESH_TOKEN_SECRET") as string) as IDecryptedToken;
+
+      if (refreshToken) {
+        const dbRefreshToken = await userAuthDbServices.getRefreshToken(userId);
+        if (dbRefreshToken?.token != refreshToken) {
+          httpError(next, new Error(EResponseMessage.NO_SNIRFING), req, EErrorStatusCode.UNAUTHORIZED);
+        }
+        const accessToken = quicker.generateToken(
+          {
+            userId: userId,
+            email: email,
+            username: username
+          },
+          AppConfig.get("ACCESS_TOKEN_SECRET") as string,
+          AppConfig.get("ACCESS_TOKEN_EXPIRY") as string
+        );
+
+        res.cookie("accessToken", accessToken, {
+          path: "/api/v1",
+          domain: AppConfig.get("DOMAIN") as string,
+          sameSite: "strict",
+          httpOnly: true,
+          secure: !(AppConfig.get("ENV") === "development"),
+          maxAge: AppConfig.get("ACCESS_TOKEN_EXPIRY") as number
+        });
+
+        httpResponse(req, res, EResponseStatusCode.OK, EResponseMessage.LOGIN_SUCCESS, {
+          accessToken: `Bearer ${accessToken}`
+        });
+      }
     } catch (error) {
       httpError(next, error, req);
     }

@@ -152,6 +152,14 @@ export default {
         userId: id
       }
     });
+  },
+
+  getRefreshToken: (id: string) => {
+    return prisma.refreshToken.findUnique({
+      where: {
+        userId: id
+      }
+    });
   }
 };
 

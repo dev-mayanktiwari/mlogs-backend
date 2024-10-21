@@ -12,7 +12,7 @@ interface IAuthenticatedRequest extends Request {
   authenticatedUser: IUser;
 }
 
-interface IDecryptedToken extends JwtPayload {
+export interface IDecryptedToken extends JwtPayload {
   userId: string;
   email: string;
   username: string;
@@ -25,7 +25,7 @@ const authMiddleware = async (request: Request, _response: Response, next: NextF
     const { accessToken } = cookies as { accessToken: string | undefined };
 
     if (!accessToken) {
-      return httpError(next, new Error(EResponseMessage.UNAUTHORIZED), req, EErrorStatusCode.UNAUTHORIZED);
+      return httpError(next, new Error(EResponseMessage.NO_TOKEN_FOUND), req, EErrorStatusCode.UNAUTHORIZED);
     }
 
     const { userId } = quicker.verifyToken(accessToken, AppConfig.get("ACCESS_TOKEN_SECRET") as string) as IDecryptedToken;
@@ -39,8 +39,12 @@ const authMiddleware = async (request: Request, _response: Response, next: NextF
     req.authenticatedUser = user;
     return next();
   } catch (error) {
+    if ((error as Error).name === "TokenExpiredError") {
+      return httpError(next, new Error(EResponseMessage.TOKEN_EXPIRED), request, EErrorStatusCode.UNAUTHORIZED);
+    }
     return httpError(next, error, request, EErrorStatusCode.INTERNAL_SERVER_ERROR);
   }
 };
 
 export default authMiddleware;
+

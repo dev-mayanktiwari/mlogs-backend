@@ -21,7 +21,10 @@ export const enum EResponseMessage {
   INVALID_TOKEN_CODE = "The verification link is invalid.",
   ACCOUNT_ALREADY_VERIFIED = "Account is already verified.",
   USER_ID_NOT_FOUND = "User ID not found.",
-  INVALID_CREDENTIALS = "Invalid credentials."
+  INVALID_CREDENTIALS = "Invalid credentials.",
+  NO_TOKEN_FOUND = "No token found.",
+  TOKEN_EXPIRED = "Token expired.",
+  NO_SNIRFING = "No snirfing allowed.",
 }
 
 export const MIN_LENGTH_MESSAGE = (entity: string, length: number) => `${entity} must be ${length} characters long.`;
