@@ -262,7 +262,11 @@ export default {
   refreshToken: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { cookies } = req;
-      const { refreshToken } = cookies as { refreshToken: string | undefined };
+      const { refreshToken, accessToken } = cookies as { refreshToken: string | undefined; accessToken: string | undefined };
+
+      if (accessToken) {
+        return httpError(next, new Error(EResponseMessage.ACCESS_DENIED), req, EErrorStatusCode.FORBIDDEN);
+      }
 
       if (!refreshToken) {
         return httpError(next, new Error(EResponseMessage.NO_TOKEN_FOUND), req, EErrorStatusCode.UNAUTHORIZED);
@@ -278,14 +282,14 @@ export default {
       }
 
       // Generate new access token
-      const accessToken = quicker.generateToken(
+      const newAccessToken = quicker.generateToken(
         { userId, email, username },
         AppConfig.get("ACCESS_TOKEN_SECRET") as string,
         AppConfig.get("ACCESS_TOKEN_EXPIRY") as string
       );
 
       // Set access token in cookies
-      res.cookie("accessToken", accessToken, {
+      res.cookie("accessToken", newAccessToken, {
         path: "/api/v1",
         domain: AppConfig.get("DOMAIN") as string,
         sameSite: "strict",
@@ -296,7 +300,7 @@ export default {
 
       // Send response
       httpResponse(req, res, EResponseStatusCode.OK, EResponseMessage.LOGIN_SUCCESS, {
-        accessToken: `Bearer ${accessToken}`
+        accessToken: `Bearer ${newAccessToken}`
       });
     } catch (error) {
       httpError(next, error, req);
