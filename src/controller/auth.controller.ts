@@ -1,18 +1,18 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { NextFunction, Request, Response } from "express";
+import {NextFunction, Request, Response} from "express";
 import httpResponse from "../utils/httpResponse";
-import { EErrorStatusCode, EResponseStatusCode } from "../constant/application";
+import {EErrorStatusCode, EResponseStatusCode} from "../constant/application";
 import httpError from "../utils/httpError";
 import quicker from "../utils/quicker";
 import moment from "moment";
-import { loginUserSchema, registerUserSchema } from "../types/userTypes";
+import {loginUserSchema, registerUserSchema, resetPasswordSchema} from "../types/userTypes";
 import userAuthDbServices from "../services/userAuthDbServices";
-import { ENTITY_EXISTS, EResponseMessage } from "../constant/responseMessage";
-import { IUserInterface } from "../types/userInterface";
-import { sendVerificationEmail, accountConfirmedEmail } from "../services/sendEmailService";
-import { IUser } from "../types/prismaUserTypes";
-import { AppConfig } from "../config";
-import { IDecryptedToken } from "../middleware/authentication";
+import {ENTITY_EXISTS, EResponseMessage} from "../constant/responseMessage";
+import {IUserInterface} from "../types/userInterface";
+import {accountConfirmedEmail, sendPasswordResetLink, sendVerificationEmail} from "../services/sendEmailService";
+import {IUser} from "../types/prismaUserTypes";
+import {AppConfig} from "../config";
+import {IDecryptedToken} from "../middleware/authentication";
 
 interface IConfirmRequest extends Request {
   params: {
@@ -32,6 +32,19 @@ export default {
     try {
       throw new Error("This is an error");
       httpResponse(req, res, EResponseStatusCode.OK, "Hello World", { name: "John Doe" });
+    } catch (error) {
+      httpError(next, error, req);
+    }
+  },
+
+  health: (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const healthData = {
+        application: quicker.getApplicationHealth(),
+        system: quicker.getSystemHealth(),
+        time: moment(new Date().toISOString()).format("YYYY-MM-DD HH:mm:ss")
+      };
+      httpResponse(req, res, EResponseStatusCode.OK, "Health Check", healthData);
     } catch (error) {
       httpError(next, error, req);
     }
@@ -124,6 +137,7 @@ export default {
       httpError(next, error, req);
     }
   },
+
   login: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { body } = req;
@@ -202,19 +216,6 @@ export default {
     }
   },
 
-  health: (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const healthData = {
-        application: quicker.getApplicationHealth(),
-        system: quicker.getSystemHealth(),
-        time: moment(new Date().toISOString()).format("YYYY-MM-DD HH:mm:ss")
-      };
-      httpResponse(req, res, EResponseStatusCode.OK, "Health Check", healthData);
-    } catch (error) {
-      httpError(next, error, req);
-    }
-  },
-
   selfIdentification: (req: Request, res: Response, next: NextFunction) => {
     try {
       const { authenticatedUser } = req as IAuthenticatedRequest;
@@ -259,10 +260,14 @@ export default {
       httpError(next, error, req, EErrorStatusCode.INTERNAL_SERVER_ERROR);
     }
   },
+
   refreshToken: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { cookies } = req;
-      const { refreshToken, accessToken } = cookies as { refreshToken: string | undefined; accessToken: string | undefined };
+      const { refreshToken, accessToken } = cookies as {
+        refreshToken: string | undefined;
+        accessToken: string | undefined;
+      };
 
       if (accessToken) {
         return httpError(next, new Error(EResponseMessage.ACCESS_DENIED), req, EErrorStatusCode.FORBIDDEN);
@@ -305,6 +310,39 @@ export default {
     } catch (error) {
       httpError(next, error, req);
     }
+  },
+
+  resetPassword: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      // Validate body
+      const { body } = req;
+      const parsed = resetPasswordSchema.safeParse(body);
+      if (!parsed.success) {
+        const errorMessage = parsed.error?.issues.map((issue) => issue.message).join(", ");
+        return httpError(next, new Error(errorMessage || "Invalid inputs"), req, EErrorStatusCode.BAD_REQUEST);
+      }
+
+      // Check if user exists, confirmed user
+      const user = await userAuthDbServices.findUserByEmailOrUsername(parsed.data.email);
+      if (!user) {
+        return httpError(next, new Error(EResponseMessage.INVALID_CREDENTIALS), req, EErrorStatusCode.UNAUTHORIZED);
+      }
+
+      // Generate token
+      const token = quicker.generateRandomToken();
+
+      // Generate expiry time
+      const expiryTime = quicker.generateExpirationTime(15);
+
+      // Save token to DB
+      await userAuthDbServices.saveResetPasswordCode(user.userId, token, expiryTime);
+
+      // Send Email to user
+      await sendPasswordResetLink(user.email, user.name, token);
+
+      httpResponse(req, res, EResponseStatusCode.OK, "Reset password", {});
+    } catch (error) {
+      httpError(next, error, req);
+    }
   }
 };
-

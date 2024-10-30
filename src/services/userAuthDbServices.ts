@@ -160,6 +160,20 @@ export default {
         userId: id
       }
     });
+  },
+
+  saveResetPasswordCode: (id: string, token: string, date: string) => {
+    return prisma.passwordRecovery.create({
+      data: {
+        token,
+        expiry: date,
+        user: {
+          connect: {
+            userId: id
+          }
+        }
+      }
+    });
   }
 };
 

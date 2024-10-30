@@ -1,15 +1,25 @@
 import { Queue } from "bullmq";
 import { AppConfig } from "../config";
 
-const emailQueue = new Queue("emailQueue", {
+const generalQueueName = "general-service-queue";
+const passwordQueueName = "password-service-queue";
+
+const generalQueue = new Queue(generalQueueName, {
   connection: {
-    host: AppConfig.get("REDIS_HOST") as string, 
+    host: AppConfig.get("REDIS_HOST") as string,
+    port: Number(AppConfig.get("REDIS_PORT"))
+  }
+});
+
+const passwordEmailQueue = new Queue(passwordQueueName, {
+  connection: {
+    host: AppConfig.get("REDIS_HOST") as string,
     port: Number(AppConfig.get("REDIS_PORT"))
   }
 });
 
 export const sendVerificationEmail = async (email: string, name: string, token: string, code: string) => {
-  await emailQueue.add("sendVerificationEmail", {
+  await generalQueue.add("sendAccountConfirmationEmail", {
     email,
     name,
     token,
@@ -18,7 +28,7 @@ export const sendVerificationEmail = async (email: string, name: string, token: 
 };
 
 export const accountConfirmedEmail = async (email: string, name: string) => {
-  await emailQueue.add(
+  await generalQueue.add(
     "sendAccountConfirmedEmail",
     {
       email,
@@ -28,3 +38,10 @@ export const accountConfirmedEmail = async (email: string, name: string) => {
   );
 };
 
+export const sendPasswordResetLink = async (email: string, name: string, token: string) => {
+  await passwordEmailQueue.add("sendPasswordResetEmail", {
+    email,
+    name,
+    token
+  });
+};

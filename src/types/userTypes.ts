@@ -26,5 +26,10 @@ export const loginUserSchema = z.object({
     .max(EUserTypeConstants.MAX_PASSWORD_LENGTH, MAX_LENGTH_MESSAGE("Password", EUserTypeConstants.MAX_PASSWORD_LENGTH))
 });
 
+export const resetPasswordSchema = z.object({
+  email: z.string().email()
+});
+
 export type RegisterUserType = z.infer<typeof registerUserSchema>;
 export type LoginUserType = z.infer<typeof loginUserSchema>;
+export type ResetPasswordType = z.infer<typeof resetPasswordSchema>;

@@ -4,6 +4,7 @@ import { AppConfig } from "../config";
 import { v4 } from "uuid";
 import { randomInt } from "crypto";
 import jwt, { SignOptions } from "jsonwebtoken";
+import moment from "moment";
 
 export default {
   getSystemHealth: () => {
@@ -42,6 +43,9 @@ export default {
   },
   verifyToken: (token: string, secret: string) => {
     return jwt.verify(token, secret);
+  },
+  generateExpirationTime: (minutes: number) => {
+    return moment().add(minutes, "minutes").toISOString();
   }
 };
 
