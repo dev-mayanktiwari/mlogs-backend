@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { EUserTypeConstants } from "../constant/application";
-import { MIN_LENGTH_MESSAGE, MAX_LENGTH_MESSAGE } from "../constant/responseMessage";
+import { MAX_LENGTH_MESSAGE, MIN_LENGTH_MESSAGE } from "../constant/responseMessage";
 
 export const registerUserSchema = z.object({
   name: z
@@ -26,10 +26,18 @@ export const loginUserSchema = z.object({
     .max(EUserTypeConstants.MAX_PASSWORD_LENGTH, MAX_LENGTH_MESSAGE("Password", EUserTypeConstants.MAX_PASSWORD_LENGTH))
 });
 
-export const resetPasswordSchema = z.object({
+export const forgotPasswordSchema = z.object({
   email: z.string().email()
+});
+
+export const resetPasswordSchema = z.object({
+  password: z
+    .string()
+    .min(EUserTypeConstants.MIN_PASSWORD_LENGTH, MIN_LENGTH_MESSAGE("Password", EUserTypeConstants.MIN_PASSWORD_LENGTH))
+    .max(EUserTypeConstants.MAX_PASSWORD_LENGTH, MAX_LENGTH_MESSAGE("Password", EUserTypeConstants.MAX_PASSWORD_LENGTH))
 });
 
 export type RegisterUserType = z.infer<typeof registerUserSchema>;
 export type LoginUserType = z.infer<typeof loginUserSchema>;
+export type ForgotPasswordType = z.infer<typeof forgotPasswordSchema>;
 export type ResetPasswordType = z.infer<typeof resetPasswordSchema>;

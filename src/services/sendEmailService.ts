@@ -45,3 +45,10 @@ export const sendPasswordResetLink = async (email: string, name: string, token: 
     token
   });
 };
+
+export const sendPasswordChangeEmail = async (email: string, name: string) => {
+  await generalQueue.add("sendPasswordChangedMail", {
+    email,
+    name
+  });
+};

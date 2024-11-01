@@ -1,4 +1,4 @@
-import { User as PrismaUser, AccountConfirmation, RefreshToken, PasswordRecovery, Like, Comment, SavedPost } from "@prisma/client";
+import { AccountConfirmation, Comment, Like, PasswordRecovery, RefreshToken, SavedPost, User as PrismaUser } from "@prisma/client";
 
 // Make all properties from PrismaUser optional
 type OptionalPrismaUser = Partial<PrismaUser>;

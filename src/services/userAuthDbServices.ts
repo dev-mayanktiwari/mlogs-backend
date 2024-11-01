@@ -174,6 +174,38 @@ export default {
         }
       }
     });
+  },
+
+  findUserByResetToken: (token: string) => {
+    return prisma.passwordRecovery.findFirst({
+      where: {
+        token
+      }
+    });
+  },
+
+  updateUserPasswordbyId: (id: string, password: string) => {
+    return prisma.user.update({
+      where: {
+        userId: id
+      },
+      data: {
+        password
+      }
+    });
+  },
+
+  getExpiryTime: (id: string) => {
+    return prisma.passwordRecovery.findFirst({
+      orderBy: {
+        recoverId: "desc"
+      },
+      where: {
+        userId: id
+      },
+      select: {
+        expiry: true
+      }
+    });
   }
 };
-

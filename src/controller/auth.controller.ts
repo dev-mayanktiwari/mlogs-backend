@@ -1,18 +1,18 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import {NextFunction, Request, Response} from "express";
+import { NextFunction, Request, Response } from "express";
 import httpResponse from "../utils/httpResponse";
-import {EErrorStatusCode, EResponseStatusCode} from "../constant/application";
+import { EErrorStatusCode, EResponseStatusCode } from "../constant/application";
 import httpError from "../utils/httpError";
 import quicker from "../utils/quicker";
 import moment from "moment";
-import {loginUserSchema, registerUserSchema, resetPasswordSchema} from "../types/userTypes";
+import { forgotPasswordSchema, loginUserSchema, registerUserSchema, resetPasswordSchema } from "../types/userTypes";
 import userAuthDbServices from "../services/userAuthDbServices";
-import {ENTITY_EXISTS, EResponseMessage} from "../constant/responseMessage";
-import {IUserInterface} from "../types/userInterface";
-import {accountConfirmedEmail, sendPasswordResetLink, sendVerificationEmail} from "../services/sendEmailService";
-import {IUser} from "../types/prismaUserTypes";
-import {AppConfig} from "../config";
-import {IDecryptedToken} from "../middleware/authentication";
+import { ENTITY_EXISTS, EResponseMessage } from "../constant/responseMessage";
+import { IUserInterface } from "../types/userInterface";
+import { accountConfirmedEmail, sendPasswordChangeEmail, sendPasswordResetLink, sendVerificationEmail } from "../services/sendEmailService";
+import { IUser } from "../types/prismaUserTypes";
+import { AppConfig } from "../config";
+import { IDecryptedToken } from "../middleware/authentication";
 
 interface IConfirmRequest extends Request {
   params: {
@@ -312,11 +312,11 @@ export default {
     }
   },
 
-  resetPassword: async (req: Request, res: Response, next: NextFunction) => {
+  forgotPassword: async (req: Request, res: Response, next: NextFunction) => {
     try {
       // Validate body
       const { body } = req;
-      const parsed = resetPasswordSchema.safeParse(body);
+      const parsed = forgotPasswordSchema.safeParse(body);
       if (!parsed.success) {
         const errorMessage = parsed.error?.issues.map((issue) => issue.message).join(", ");
         return httpError(next, new Error(errorMessage || "Invalid inputs"), req, EErrorStatusCode.BAD_REQUEST);
@@ -340,6 +340,58 @@ export default {
       // Send Email to user
       await sendPasswordResetLink(user.email, user.name, token);
 
+      httpResponse(req, res, EResponseStatusCode.OK, "Forgot password", {});
+    } catch (error) {
+      httpError(next, error, req);
+    }
+  },
+
+  resetPassword: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      // TODO
+      // Body Parsing
+      const body = req.body;
+      const token: string = req.params.token;
+      const parsed = resetPasswordSchema.safeParse(body);
+      if (!parsed.success) {
+        const errorMessage = parsed.error?.issues.map((issue) => issue.message).join(", ");
+        return httpError(next, new Error(errorMessage || "Invalid inputs"), req, EErrorStatusCode.BAD_REQUEST);
+      }
+      // Fetch user by token
+      const response = await userAuthDbServices.findUserByResetToken(token);
+      if (!response) {
+        return httpError(next, new Error(EResponseMessage.NO_TOKEN_FOUND), req, EErrorStatusCode.UNAUTHORIZED);
+      }
+      // Find user by ID
+      const user = await userAuthDbServices.findUserById(response.userId);
+      // Check if user account
+      if (!user?.accountConfirmation?.isVerified) {
+        return httpError(next, new Error(EResponseMessage.ACCOUNT_NOT_VERIFIED), req, EErrorStatusCode.FORBIDDEN);
+      }
+      // Check expiry of URL
+      const expiryTimeObj = await userAuthDbServices.getExpiryTime(user.userId);
+      // Ensure you access expiry field correctly
+      const expiryTime = expiryTimeObj?.expiry || null;
+      if (expiryTime) {
+        const momentExpiryTime = moment(expiryTime);
+        const isUrlValid = momentExpiryTime.isAfter(Date.now());
+        if (!isUrlValid) {
+          return httpError(next, new Error(EResponseMessage.TIMEOUT), req, EErrorStatusCode.FORBIDDEN);
+        }
+      } else {
+        return httpError(next, new Error(EResponseMessage.VALIDATION_ERROR), req, EErrorStatusCode.FORBIDDEN);
+      }
+
+      // Hash new password
+      const newPassword = await quicker.hashPassword(parsed.data.password);
+
+      // User Update
+      await userAuthDbServices.updateUserPasswordbyId(user.userId, newPassword);
+
+      // Send Email
+      await sendPasswordChangeEmail(user.email, user.name);
+
+      // Response
       httpResponse(req, res, EResponseStatusCode.OK, "Reset password", {});
     } catch (error) {
       httpError(next, error, req);

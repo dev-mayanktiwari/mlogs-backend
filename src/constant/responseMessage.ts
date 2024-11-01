@@ -25,6 +25,8 @@ export const enum EResponseMessage {
   NO_TOKEN_FOUND = "No token found.",
   TOKEN_EXPIRED = "Token expired.",
   NO_SNIRFING = "No snirfing allowed.",
+  ACCOUNT_NOT_VERIFIED = "Account is not verified.",
+  TIMEOUT = "URL timeout."
 }
 
 export const MIN_LENGTH_MESSAGE = (entity: string, length: number) => `${entity} must be ${length} characters long.`;
@@ -32,4 +34,3 @@ export const MIN_LENGTH_MESSAGE = (entity: string, length: number) => `${entity}
 export const MAX_LENGTH_MESSAGE = (entity: string, length: number) => `${entity} must be at most ${length} characters long.`;
 
 export const ENTITY_EXISTS = (entity: string) => `${entity} already exists.`;
-

@@ -10,7 +10,7 @@ router.post("/login", authController.login);
 router.get("/self-identification", authMiddleware, authController.selfIdentification);
 router.put("/logout", authMiddleware, authController.logout);
 router.post("/refresh-token", authController.refreshToken);
-router.put("/reset-password", authController.resetPassword);
+router.put("/forgot-password", authController.forgotPassword);
+router.put("/reset-password/:token", authController.resetPassword);
 
 export default router;
-

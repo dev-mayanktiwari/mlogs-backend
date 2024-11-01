@@ -10,3 +10,11 @@ export interface IUserInterface {
     timestamp: Date | null;
   };
 }
+
+export interface IPasswordRecovery {
+  recoverId: number;
+  token: string | null;
+  expiry: Date | null;
+  lastResetAt: Date | null;
+  userId: number;
+}
