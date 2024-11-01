@@ -1,18 +1,29 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { NextFunction, Request, Response } from "express";
+import {NextFunction, Request, Response} from "express";
 import httpResponse from "../utils/httpResponse";
-import { EErrorStatusCode, EResponseStatusCode } from "../constant/application";
+import {EErrorStatusCode, EResponseStatusCode} from "../constant/application";
 import httpError from "../utils/httpError";
 import quicker from "../utils/quicker";
 import moment from "moment";
-import { forgotPasswordSchema, loginUserSchema, registerUserSchema, resetPasswordSchema } from "../types/userTypes";
+import {
+  changePasswordSchema,
+  forgotPasswordSchema,
+  loginUserSchema,
+  registerUserSchema,
+  resetPasswordSchema
+} from "../types/userTypes";
 import userAuthDbServices from "../services/userAuthDbServices";
-import { ENTITY_EXISTS, EResponseMessage } from "../constant/responseMessage";
-import { IUserInterface } from "../types/userInterface";
-import { accountConfirmedEmail, sendPasswordChangeEmail, sendPasswordResetLink, sendVerificationEmail } from "../services/sendEmailService";
-import { IUser } from "../types/prismaUserTypes";
-import { AppConfig } from "../config";
-import { IDecryptedToken } from "../middleware/authentication";
+import {ENTITY_EXISTS, EResponseMessage} from "../constant/responseMessage";
+import {IUserInterface} from "../types/userInterface";
+import {
+  accountConfirmedEmail,
+  sendPasswordChangeEmail,
+  sendPasswordResetLink,
+  sendVerificationEmail
+} from "../services/sendEmailService";
+import {IUser} from "../types/prismaUserTypes";
+import {AppConfig} from "../config";
+import {IDecryptedToken} from "../middleware/authentication";
 
 interface IConfirmRequest extends Request {
   params: {
@@ -25,6 +36,15 @@ interface IConfirmRequest extends Request {
 
 interface IAuthenticatedRequest extends Request {
   authenticatedUser: IUser;
+}
+
+interface IChangePasswordInterface extends Request {
+  authenticatedUser: IUser;
+  body: {
+    oldPassword: string;
+    newPassword: string;
+    confirmNewPassword: string;
+  };
 }
 
 export default {
@@ -383,7 +403,7 @@ export default {
       }
 
       // Hash new password
-      const newPassword = await quicker.hashPassword(parsed.data.password);
+      const newPassword = await quicker.hashPassword(parsed.data.newPassword);
 
       // User Update
       await userAuthDbServices.updateUserPasswordbyId(user.userId, newPassword);
@@ -393,6 +413,45 @@ export default {
 
       // Response
       httpResponse(req, res, EResponseStatusCode.OK, "Reset password", {});
+    } catch (error) {
+      httpError(next, error, req);
+    }
+  },
+
+  changePassword: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      // Body Parsing
+      const { body, authenticatedUser } = req as IChangePasswordInterface;
+      const parsed = changePasswordSchema.safeParse(body);
+      if (!parsed.success) {
+        const errorMessage = parsed.error?.issues.map((issue) => issue.message).join(", ");
+        return httpError(next, new Error(errorMessage || "Invalid inputs"), req, EErrorStatusCode.BAD_REQUEST);
+      }
+
+      // Getting User
+      const userId = authenticatedUser.userId;
+      const passwordObj = await userAuthDbServices.getPasswordbyUserId(userId as string);
+
+      // Checking Password
+      if (!passwordObj) {
+        return httpError(next, new Error(EResponseMessage.NOT_FOUND), req, EErrorStatusCode.NOT_IMPLEMENTED);
+      }
+      const { password } = passwordObj;
+      const isPasswordValid = await quicker.comparePassword(parsed.data.oldPassword, password);
+      if (!isPasswordValid) {
+        return httpError(next, new Error(EResponseMessage.INVALID_CREDENTIALS), req, EErrorStatusCode.FORBIDDEN);
+      }
+
+      // Hashing Password
+      const hashedPassword = await quicker.hashPassword(parsed.data.confirmNewPassword);
+
+      // Updating DB
+      await userAuthDbServices.changePasswordbyUserId(userId as string, hashedPassword);
+
+      // Sending Mail
+      await sendPasswordChangeEmail(authenticatedUser.email as string, authenticatedUser.name as string);
+
+      httpResponse(req, res, EResponseStatusCode.ACCEPTED, EResponseMessage.PASSWORD_CHANGED, {});
     } catch (error) {
       httpError(next, error, req);
     }

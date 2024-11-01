@@ -12,5 +12,6 @@ router.put("/logout", authMiddleware, authController.logout);
 router.post("/refresh-token", authController.refreshToken);
 router.put("/forgot-password", authController.forgotPassword);
 router.put("/reset-password/:token", authController.resetPassword);
+router.put("/change-password", authMiddleware, authController.changePassword);
 
 export default router;

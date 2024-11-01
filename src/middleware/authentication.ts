@@ -47,4 +47,3 @@ const authMiddleware = async (request: Request, _response: Response, next: NextF
 };
 
 export default authMiddleware;
-

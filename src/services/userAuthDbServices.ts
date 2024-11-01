@@ -207,5 +207,27 @@ export default {
         expiry: true
       }
     });
+  },
+
+  getPasswordbyUserId: (id: string) => {
+    return prisma.user.findUnique({
+      where: {
+        userId: id
+      },
+      select: {
+        password: true
+      }
+    });
+  },
+
+  changePasswordbyUserId: (id: string, password: string) => {
+    return prisma.user.update({
+      where: {
+        userId: id
+      },
+      data: {
+        password
+      }
+    });
   }
 };
