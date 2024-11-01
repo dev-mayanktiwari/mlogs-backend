@@ -407,7 +407,6 @@ export default {
 
       // User Update
       await userAuthDbServices.updateUserPasswordbyId(user.userId, newPassword);
-
       // Send Email
       await sendPasswordChangeEmail(user.email, user.name);
 

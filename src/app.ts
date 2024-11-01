@@ -1,11 +1,12 @@
 import express, { Application, NextFunction, Request, Response } from "express";
-import router from "./router/apiRouter";
+import authRouter from "./router/userAuthRouter";
 import cors from "cors";
 import globalErrorHandler from "./middleware/globalErrorHandler";
 import { EResponseMessage } from "./constant/responseMessage";
 import httpError from "./utils/httpError";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
+import checkupRouter from "./router/checkupRouter";
 
 const app: Application = express();
 
@@ -16,9 +17,9 @@ app.use(cors());
 app.use(express.json({ limit: "1mb" }));
 app.use(express.urlencoded({ extended: true }));
 
-
 // Routes
-app.use("/api/v1", router);
+app.use("/api/v1/checkup", checkupRouter);
+app.use("/api/v1/user/auth", authRouter);
 
 //404 Handler
 app.use((req: Request, _: Response, next: NextFunction) => {
@@ -33,4 +34,3 @@ app.use((req: Request, _: Response, next: NextFunction) => {
 app.use(globalErrorHandler);
 
 export default app;
-
