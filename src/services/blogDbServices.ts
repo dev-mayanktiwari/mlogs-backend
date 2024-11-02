@@ -72,6 +72,60 @@ export default {
         postId: Number(blogId)
       }
     });
+  },
+
+  checkBlogAlreadyCommented: (userId: string, blogId: number) => {
+    return prisma.comment.findUnique({
+      where: {
+        userId_postId: {
+          userId,
+          postId: blogId
+        }
+      }
+    });
+  },
+
+  commentBlogbyId: (userId: string, blogId: number, text: string) => {
+    return prisma.comment.create({
+      data: {
+        userId,
+        postId: blogId,
+        text
+      }
+    });
+  },
+
+  uncommentBlogbyId: (userId: string, blogId: number) => {
+    return prisma.comment.delete({
+      where: {
+        userId_postId: {
+          userId,
+          postId: Number(blogId)
+        }
+      }
+    });
+  },
+
+  getTotalComments: (blogId: number) => {
+    return prisma.comment.count({
+      where: {
+        postId: Number(blogId)
+      }
+    });
+  },
+
+  editComment: (userId: string, blogId: number, text: string) => {
+    return prisma.comment.update({
+      where: {
+        userId_postId: {
+          userId,
+          postId: Number(blogId)
+        }
+      },
+      data: {
+        text
+      }
+    });
   }
 };
 

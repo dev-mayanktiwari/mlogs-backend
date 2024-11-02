@@ -6,6 +6,7 @@ import blogDbServices from "../services/blogDbServices";
 import { ENTITY_EXISTS, ENTITY_NOT_FOUND, EResponseMessage } from "../constant/responseMessage";
 import { IUser } from "../types/prismaUserTypes";
 import userAuthDbServices from "../services/userAuthDbServices";
+import { blogCommentSchema } from "../types/blogTypes";
 
 interface IFetchBlogs extends Request {
   query: {
@@ -16,6 +17,16 @@ interface IFetchBlogs extends Request {
 
 interface ILikeBlog extends Request {
   authenticatedUser: IUser;
+  params: {
+    blogId: string;
+  };
+}
+
+interface ICommentBlog extends Request {
+  authenticatedUser: IUser;
+  body: {
+    text: string;
+  };
   params: {
     blogId: string;
   };
@@ -113,7 +124,7 @@ export default {
       // Unlike the blog
       await blogDbServices.unlikeBlogbyId(user.userId, Number(params.blogId));
 
-      httpResponse(req, res, EResponseStatusCode.OK, "Blog liked", {});
+      httpResponse(req, res, EResponseStatusCode.OK, "Blog unliked", {});
     } catch (error) {
       httpError(next, error, req);
     }
@@ -132,6 +143,130 @@ export default {
       const totalLikes = await blogDbServices.getTotalLikes(Number(blogId));
 
       return httpResponse(req, res, EResponseStatusCode.OK, `Total likes: ${totalLikes}`, { likes: totalLikes });
+    } catch (error) {
+      httpError(next, error, req);
+    }
+  },
+
+  comment: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      // Validate body
+      const { authenticatedUser, params, body } = req as ICommentBlog;
+      const parsed = blogCommentSchema.safeParse(body);
+      if (!parsed.success) {
+        const errorMessage = parsed.error?.issues.map((issue) => issue.message).join(", ");
+        return httpError(next, new Error(errorMessage || "Invalid inputs"), req, EErrorStatusCode.BAD_REQUEST);
+      }
+
+      // Find user
+      const user = await userAuthDbServices.findUserById(authenticatedUser.userId as string);
+      if (!user) {
+        return httpError(next, new Error(EResponseMessage.USER_NOT_FOUND), req, EErrorStatusCode.NOT_FOUND);
+      }
+
+      // Find blog
+      const blog = await blogDbServices.findBlogbyId(Number(params.blogId));
+      if (!blog) {
+        return httpError(next, new Error(ENTITY_NOT_FOUND("Blog")), req, EErrorStatusCode.NOT_FOUND);
+      }
+
+      // Check if already commented
+      const isAlreadyCommented = await blogDbServices.checkBlogAlreadyCommented(user.userId, Number(params.blogId));
+      if (isAlreadyCommented) {
+        return httpError(next, new Error(ENTITY_EXISTS("Comment")), req, EErrorStatusCode.FORBIDDEN);
+      }
+
+      // Comment the blog
+      const comment = await blogDbServices.commentBlogbyId(user.userId, Number(params.blogId), parsed.data.text);
+
+      httpResponse(req, res, EResponseStatusCode.OK, "Blog commented", { comment: comment });
+    } catch (error) {
+      httpError(next, error, req);
+    }
+  },
+
+  uncomment: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      // Validate body
+      const { authenticatedUser, params } = req as ICommentBlog;
+
+      // Find user
+      const user = await userAuthDbServices.findUserById(authenticatedUser.userId as string);
+      if (!user) {
+        return httpError(next, new Error(EResponseMessage.USER_NOT_FOUND), req, EErrorStatusCode.NOT_FOUND);
+      }
+
+      // Find blog
+      const blog = await blogDbServices.findBlogbyId(Number(params.blogId));
+      if (!blog) {
+        return httpError(next, new Error(ENTITY_NOT_FOUND("Blog")), req, EErrorStatusCode.NOT_FOUND);
+      }
+
+      // Check if already commented
+      const isAlreadyCommented = await blogDbServices.checkBlogAlreadyCommented(user.userId, Number(params.blogId));
+      if (!isAlreadyCommented) {
+        return httpError(next, new Error(ENTITY_NOT_FOUND("Comment")), req, EErrorStatusCode.FORBIDDEN);
+      }
+
+      // Uncomment the blog
+      await blogDbServices.uncommentBlogbyId(user.userId, Number(params.blogId));
+
+      httpResponse(req, res, EResponseStatusCode.OK, "Blog uncommented", {});
+    } catch (error) {
+      httpError(next, error, req);
+    }
+  },
+
+  getTotalComments: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { params } = req as ICommentBlog;
+      const { blogId } = params;
+
+      const blog = await blogDbServices.findBlogbyId(Number(params.blogId));
+      if (!blog) {
+        return httpError(next, new Error(ENTITY_NOT_FOUND("Blog")), req, EErrorStatusCode.NOT_FOUND);
+      }
+
+      const totalComments = await blogDbServices.getTotalComments(Number(blogId));
+
+      return httpResponse(req, res, EResponseStatusCode.OK, `Total comments: ${totalComments}`, { comments: totalComments });
+    } catch (error) {
+      httpError(next, error, req);
+    }
+  },
+
+  editComment: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      // Validate body
+      const { authenticatedUser, params, body } = req as ICommentBlog;
+      const parsed = blogCommentSchema.safeParse(body);
+      if (!parsed.success) {
+        const errorMessage = parsed.error?.issues.map((issue) => issue.message).join(", ");
+        return httpError(next, new Error(errorMessage || "Invalid inputs"), req, EErrorStatusCode.BAD_REQUEST);
+      }
+
+      // Find user
+      const user = await userAuthDbServices.findUserById(authenticatedUser.userId as string);
+      if (!user) {
+        return httpError(next, new Error(EResponseMessage.USER_NOT_FOUND), req, EErrorStatusCode.NOT_FOUND);
+      }
+
+      // Find blog
+      const blog = await blogDbServices.findBlogbyId(Number(params.blogId));
+      if (!blog) {
+        return httpError(next, new Error(ENTITY_NOT_FOUND("Blog")), req, EErrorStatusCode.NOT_FOUND);
+      }
+
+      // Check if already commented
+      const isAlreadyCommented = await blogDbServices.checkBlogAlreadyCommented(user.userId, Number(params.blogId));
+      if (!isAlreadyCommented) {
+        return httpError(next, new Error(ENTITY_NOT_FOUND("Comment")), req, EErrorStatusCode.FORBIDDEN);
+      }
+
+      // Edit the comment
+      const comment = await blogDbServices.editComment(user.userId, Number(params.blogId), parsed.data.text);
+
+      httpResponse(req, res, EResponseStatusCode.OK, "Comment edited", { comment: comment });
     } catch (error) {
       httpError(next, error, req);
     }
