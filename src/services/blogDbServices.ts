@@ -64,6 +64,14 @@ export default {
         }
       }
     });
+  },
+
+  getTotalLikes: (blogId: number) => {
+    return prisma.like.count({
+      where: {
+        postId: Number(blogId)
+      }
+    });
   }
 };
 

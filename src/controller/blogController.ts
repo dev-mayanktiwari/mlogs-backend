@@ -117,7 +117,23 @@ export default {
     } catch (error) {
       httpError(next, error, req);
     }
-  }
+  },
 
-  
+  totalLikes: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { params } = req as ILikeBlog;
+      const { blogId } = params;
+
+      const blog = await blogDbServices.findBlogbyId(Number(params.blogId));
+      if (!blog) {
+        return httpError(next, new Error(ENTITY_NOT_FOUND("Blog")), req, EErrorStatusCode.NOT_FOUND);
+      }
+
+      const totalLikes = await blogDbServices.getTotalLikes(Number(blogId));
+
+      return httpResponse(req, res, EResponseStatusCode.OK, `Total likes: ${totalLikes}`, { likes: totalLikes });
+    } catch (error) {
+      httpError(next, error, req);
+    }
+  }
 };
