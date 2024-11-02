@@ -44,6 +44,17 @@ export default {
     });
   },
 
+  unlikeBlogbyId: (userId: string, blogId: number) => {
+    return prisma.like.delete({
+      where: {
+        userId_postId: {
+          userId,
+          postId: Number(blogId)
+        }
+      }
+    });
+  },
+
   checkBlogAlreadyLiked: (userId: string, blogId: number) => {
     return prisma.like.findUnique({
       where: {

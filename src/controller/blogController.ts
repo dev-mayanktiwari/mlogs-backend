@@ -84,5 +84,40 @@ export default {
     } catch (error) {
       httpError(next, error, req);
     }
+  },
+
+  unlike: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      // Validate body
+      const { authenticatedUser, params } = req as ILikeBlog;
+
+      // Find user
+      const user = await userAuthDbServices.findUserById(authenticatedUser.userId as string);
+      if (!user) {
+        return httpError(next, new Error(EResponseMessage.USER_NOT_FOUND), req, EErrorStatusCode.NOT_FOUND);
+      }
+
+      // Find blog
+      const blog = await blogDbServices.findBlogbyId(Number(params.blogId));
+      if (!blog) {
+        return httpError(next, new Error(ENTITY_NOT_FOUND("Blog")), req, EErrorStatusCode.NOT_FOUND);
+      }
+
+      // Check if already liked
+      const isAlreadyLiked = await blogDbServices.checkBlogAlreadyLiked(user.userId, Number(params.blogId));
+
+      if (!isAlreadyLiked) {
+        return httpError(next, new Error(ENTITY_NOT_FOUND("Like")), req, EErrorStatusCode.FORBIDDEN);
+      }
+
+      // Unlike the blog
+      await blogDbServices.unlikeBlogbyId(user.userId, Number(params.blogId));
+
+      httpResponse(req, res, EResponseStatusCode.OK, "Blog liked", {});
+    } catch (error) {
+      httpError(next, error, req);
+    }
   }
+
+  
 };
