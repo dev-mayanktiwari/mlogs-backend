@@ -25,22 +25,38 @@ model User {
   savedPosts          SavedPost[]
   accountConfirmation AccountConfirmation?
   refreshToken        RefreshToken?
-  passwordRecovery    PasswordRecovery[]
+  passwordRecovery    PasswordRecovery?
 
   @@index([email])
   @@index([username])
 }
 
 model Post {
-  postId       Int         @id @default(autoincrement())
+  postId       Int              @id @default(autoincrement())
   title        String
   content      String
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime?        @updatedAt
   authorName   String
+  categories   PostCategories[]
   likes        Like[]
   comments     Comment[]
   savedByUsers SavedPost[]
+}
+
+model Category {
+  id   Int              @id @default(autoincrement())
+  name String
+  post PostCategories[]
+}
+
+model PostCategories {
+  postId     Int
+  post       Post      @relation(fields: [postId], references: [postId])
+  Category   Category? @relation(fields: [categoryId], references: [id])
+  categoryId Int
+
+  @@id([postId, categoryId])
 }
 
 model Like {
@@ -90,7 +106,7 @@ model PasswordRecovery {
   token       String?
   expiry      DateTime?
   lastResetAt DateTime?
-  userId      String
+  userId      String    @unique
   user        User      @relation(fields: [userId], references: [userId], onDelete: Cascade)
 }
 

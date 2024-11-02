@@ -24,9 +24,12 @@ export const enum EResponseMessage {
   INVALID_CREDENTIALS = "Invalid credentials.",
   NO_TOKEN_FOUND = "No token found.",
   TOKEN_EXPIRED = "Token expired.",
-  NO_SNIRFING = "No snirfing allowed.",
+  NO_SNIFFING = "No sniffing allowed.",
   ACCOUNT_NOT_VERIFIED = "Account is not verified.",
-  TIMEOUT = "URL timeout."
+  TIMEOUT = "URL timeout.",
+  TOKEN_REFRESHED = "Token refreshed.",
+  PASSWORD_SAME = "New password must be different from the last password.",
+  USER_NOT_FOUND = "User not found."
 }
 
 export const MIN_LENGTH_MESSAGE = (entity: string, length: number) => `${entity} must be ${length} characters long.`;
@@ -34,3 +37,4 @@ export const MIN_LENGTH_MESSAGE = (entity: string, length: number) => `${entity}
 export const MAX_LENGTH_MESSAGE = (entity: string, length: number) => `${entity} must be at most ${length} characters long.`;
 
 export const ENTITY_EXISTS = (entity: string) => `${entity} already exists.`;
+export const ENTITY_NOT_FOUND = (entity: string) => `No ${entity} found.`;

@@ -162,24 +162,27 @@ export default {
     });
   },
 
-  saveResetPasswordCode: (id: string, token: string, date: string) => {
-    return prisma.passwordRecovery.create({
-      data: {
-        token,
-        expiry: date,
-        user: {
-          connect: {
-            userId: id
-          }
-        }
-      }
-    });
-  },
-
   findUserByResetToken: (token: string) => {
     return prisma.passwordRecovery.findFirst({
       where: {
         token
+      }
+    });
+  },
+
+  saveResetPasswordCode: (id: string, token: string, date: string) => {
+    return prisma.passwordRecovery.upsert({
+      where: {
+        userId: id
+      },
+      update: {
+        token,
+        expiry: date
+      },
+      create: {
+        userId: id,
+        token,
+        expiry: date
       }
     });
   },
@@ -227,6 +230,18 @@ export default {
       },
       data: {
         password
+      }
+    });
+  },
+
+  clearResetTokenAndExpiry: (id: string) => {
+    return prisma.passwordRecovery.update({
+      where: {
+        userId: id
+      },
+      data: {
+        token: null,
+        expiry: null
       }
     });
   }

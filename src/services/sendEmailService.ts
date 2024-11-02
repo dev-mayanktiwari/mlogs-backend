@@ -19,7 +19,7 @@ const passwordEmailQueue = new Queue(passwordQueueName, {
 });
 
 export const sendVerificationEmail = async (email: string, name: string, token: string, code: string) => {
-  await generalQueue.add("sendAccountConfirmationEmail", {
+  await passwordEmailQueue.add("sendAccountConfirmationEmail", {
     email,
     name,
     token,
@@ -28,14 +28,10 @@ export const sendVerificationEmail = async (email: string, name: string, token: 
 };
 
 export const accountConfirmedEmail = async (email: string, name: string) => {
-  await generalQueue.add(
-    "sendAccountConfirmedEmail",
-    {
-      email,
-      name
-    },
-    { priority: 3 }
-  );
+  await generalQueue.add("sendWelcomeEmail", {
+    email,
+    name
+  });
 };
 
 export const sendPasswordResetLink = async (email: string, name: string, token: string) => {

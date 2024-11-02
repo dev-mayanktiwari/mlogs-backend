@@ -48,4 +48,3 @@ export default {
     return moment().add(minutes, "minutes").toISOString();
   }
 };
-

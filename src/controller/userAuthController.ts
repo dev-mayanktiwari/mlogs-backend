@@ -303,7 +303,7 @@ export default {
       // Check if refresh token in DB matches
       const dbRefreshToken = await userAuthDbServices.getRefreshToken(userId);
       if (!dbRefreshToken || dbRefreshToken.token !== refreshToken) {
-        return httpError(next, new Error(EResponseMessage.NO_SNIRFING), req, EErrorStatusCode.UNAUTHORIZED);
+        return httpError(next, new Error(EResponseMessage.NO_SNIFFING), req, EErrorStatusCode.UNAUTHORIZED);
       }
 
       // Generate new access token
@@ -324,7 +324,7 @@ export default {
       });
 
       // Send response
-      httpResponse(req, res, EResponseStatusCode.OK, EResponseMessage.LOGIN_SUCCESS, {
+      httpResponse(req, res, EResponseStatusCode.OK, EResponseMessage.TOKEN_REFRESHED, {
         accessToken: `Bearer ${newAccessToken}`
       });
     } catch (error) {
@@ -345,7 +345,7 @@ export default {
       // Check if user exists, confirmed user
       const user = await userAuthDbServices.findUserByEmailOrUsername(parsed.data.email);
       if (!user) {
-        return httpError(next, new Error(EResponseMessage.INVALID_CREDENTIALS), req, EErrorStatusCode.UNAUTHORIZED);
+        return httpError(next, new Error(EResponseMessage.USER_NOT_FOUND), req, EErrorStatusCode.UNAUTHORIZED);
       }
 
       // Generate token
@@ -368,52 +368,74 @@ export default {
 
   resetPassword: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      // TODO
       // Body Parsing
       const body = req.body;
       const token: string = req.params.token;
       const parsed = resetPasswordSchema.safeParse(body);
+
       if (!parsed.success) {
         const errorMessage = parsed.error?.issues.map((issue) => issue.message).join(", ");
         return httpError(next, new Error(errorMessage || "Invalid inputs"), req, EErrorStatusCode.BAD_REQUEST);
       }
+
       // Fetch user by token
-      const response = await userAuthDbServices.findUserByResetToken(token);
-      if (!response) {
-        return httpError(next, new Error(EResponseMessage.NO_TOKEN_FOUND), req, EErrorStatusCode.UNAUTHORIZED);
+      const tokenData = await userAuthDbServices.findUserByResetToken(token);
+      if (!tokenData) {
+        return httpError(next, new Error(EResponseMessage.TOKEN_EXPIRED), req, EErrorStatusCode.UNAUTHORIZED);
       }
+
       // Find user by ID
-      const user = await userAuthDbServices.findUserById(response.userId);
-      // Check if user account
-      if (!user?.accountConfirmation?.isVerified) {
+      const user = await userAuthDbServices.findUserById(tokenData.userId);
+      if (!user) {
+        return httpError(next, new Error(EResponseMessage.USER_ID_NOT_FOUND), req, EErrorStatusCode.NOT_FOUND);
+      }
+
+      // Check if user account is verified
+      if (!user.accountConfirmation?.isVerified) {
         return httpError(next, new Error(EResponseMessage.ACCOUNT_NOT_VERIFIED), req, EErrorStatusCode.FORBIDDEN);
       }
-      // Check expiry of URL
+
+      // Check expiry of URL - Strict 15-minute check
       const expiryTimeObj = await userAuthDbServices.getExpiryTime(user.userId);
-      // Ensure you access expiry field correctly
-      const expiryTime = expiryTimeObj?.expiry || null;
-      if (expiryTime) {
-        const momentExpiryTime = moment(expiryTime);
-        const isUrlValid = momentExpiryTime.isAfter(Date.now());
-        if (!isUrlValid) {
-          return httpError(next, new Error(EResponseMessage.TIMEOUT), req, EErrorStatusCode.FORBIDDEN);
-        }
-      } else {
+      if (!expiryTimeObj?.expiry) {
         return httpError(next, new Error(EResponseMessage.VALIDATION_ERROR), req, EErrorStatusCode.FORBIDDEN);
       }
 
-      // Hash new password
-      const newPassword = await quicker.hashPassword(parsed.data.newPassword);
+      const expiryMoment = moment(expiryTimeObj.expiry);
+      const currentMoment = moment();
+      const minutesDifference = currentMoment.diff(expiryMoment, "minutes");
 
-      // User Update
-      await userAuthDbServices.updateUserPasswordbyId(user.userId, newPassword);
-      // Send Email
+      if (minutesDifference >= 15) {
+        return httpError(next, new Error(EResponseMessage.TIMEOUT), req, EErrorStatusCode.FORBIDDEN);
+      }
+
+      // Get current password from database
+      const currentPassword = await userAuthDbServices.getPasswordbyUserId(user.userId);
+      if (!currentPassword) {
+        return httpError(next, new Error(EResponseMessage.VALIDATION_ERROR), req, EErrorStatusCode.FORBIDDEN);
+      }
+      const { password } = currentPassword;
+      // Compare passwords using the full string values
+      const arePasswordsSame = await quicker.comparePassword(parsed.data.newPassword, password);
+
+      if (arePasswordsSame) {
+        return httpError(next, new Error(EResponseMessage.PASSWORD_SAME), req, EErrorStatusCode.CONFLICT);
+      }
+
+      // Hash and update new password
+      const hashedNewPassword = await quicker.hashPassword(parsed.data.newPassword);
+      await userAuthDbServices.updateUserPasswordbyId(user.userId, hashedNewPassword);
+
+      // Clear reset token and expiry after successful password change
+      await userAuthDbServices.clearResetTokenAndExpiry(user.userId);
+
+      // Send confirmation email
       await sendPasswordChangeEmail(user.email, user.name);
 
       // Response
-      httpResponse(req, res, EResponseStatusCode.OK, "Reset password", {});
+      return httpResponse(req, res, EResponseStatusCode.OK, "Password reset successfully", {});
     } catch (error) {
-      httpError(next, error, req);
+      return httpError(next, error, req);
     }
   },
 
@@ -440,10 +462,15 @@ export default {
       if (!isPasswordValid) {
         return httpError(next, new Error(EResponseMessage.INVALID_CREDENTIALS), req, EErrorStatusCode.FORBIDDEN);
       }
-
       // Hashing Password
       const hashedPassword = await quicker.hashPassword(parsed.data.confirmNewPassword);
 
+      // Check if different from last password or not
+      const arePasswordsSame = await quicker.comparePassword(parsed.data.confirmNewPassword, password);
+
+      if (arePasswordsSame) {
+        return httpError(next, new Error(EResponseMessage.PASSWORD_SAME), req, EErrorStatusCode.CONFLICT);
+      }
       // Updating DB
       await userAuthDbServices.changePasswordbyUserId(userId as string, hashedPassword);
 
