@@ -270,5 +270,105 @@ export default {
     } catch (error) {
       httpError(next, error, req);
     }
+  },
+
+  save: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      // Validate body
+      const { authenticatedUser, params } = req as ILikeBlog;
+
+      // Find user
+      const user = await userAuthDbServices.findUserById(authenticatedUser.userId as string);
+      if (!user) {
+        return httpError(next, new Error(EResponseMessage.USER_NOT_FOUND), req, EErrorStatusCode.NOT_FOUND);
+      }
+
+      // Find blog
+      const blog = await blogDbServices.findBlogbyId(Number(params.blogId));
+      if (!blog) {
+        return httpError(next, new Error(ENTITY_NOT_FOUND("Blog")), req, EErrorStatusCode.NOT_FOUND);
+      }
+
+      // Check if already saved
+      const isAlreadySaved = await blogDbServices.checkBlogAlreadySaved(user.userId, Number(params.blogId));
+
+      if (isAlreadySaved) {
+        return httpError(next, new Error(ENTITY_EXISTS("Save")), req, EErrorStatusCode.FORBIDDEN);
+      }
+
+      // Save the blog
+      await blogDbServices.saveBlogbyId(user.userId, Number(params.blogId));
+
+      return httpResponse(req, res, EResponseStatusCode.OK, "Blog saved", {});
+    } catch (error) {
+      httpError(next, error, req);
+    }
+  },
+
+  unsave: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      // Validate body
+      const { authenticatedUser, params } = req as ILikeBlog;
+
+      // Find user
+      const user = await userAuthDbServices.findUserById(authenticatedUser.userId as string);
+      if (!user) {
+        return httpError(next, new Error(EResponseMessage.USER_NOT_FOUND), req, EErrorStatusCode.NOT_FOUND);
+      }
+
+      // Find blog
+      const blog = await blogDbServices.findBlogbyId(Number(params.blogId));
+      if (!blog) {
+        return httpError(next, new Error(ENTITY_NOT_FOUND("Blog")), req, EErrorStatusCode.NOT_FOUND);
+      }
+
+      // Check if already saved
+      const isAlreadySaved = await blogDbServices.checkBlogAlreadySaved(user.userId, Number(params.blogId));
+
+      if (!isAlreadySaved) {
+        return httpError(next, new Error(ENTITY_NOT_FOUND("Save")), req, EErrorStatusCode.FORBIDDEN);
+      }
+
+      // Unsave the blog
+      await blogDbServices.unsaveBlogbyId(user.userId, Number(params.blogId));
+
+      return httpResponse(req, res, EResponseStatusCode.OK, "Blog unsaved", {});
+    } catch (error) {
+      httpError(next, error, req);
+    }
+  },
+
+  totalSaves: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { params } = req as ILikeBlog;
+      const { blogId } = params;
+
+      const blog = await blogDbServices.findBlogbyId(Number(params.blogId));
+      if (!blog) {
+        return httpError(next, new Error(ENTITY_NOT_FOUND("Blog")), req, EErrorStatusCode.NOT_FOUND);
+      }
+
+      const totalSaves = await blogDbServices.getTotalSaves(Number(blogId));
+
+      return httpResponse(req, res, EResponseStatusCode.OK, `Total saves: ${totalSaves}`, { saves: totalSaves });
+    } catch (error) {
+      httpError(next, error, req);
+    }
+  },
+
+  getBlog: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { params } = req as ILikeBlog;
+      const { blogId } = params;
+
+      const blog = await blogDbServices.findBlogbyId(Number(blogId));
+      if (!blog) {
+        return httpError(next, new Error(ENTITY_NOT_FOUND("Blog")), req, EErrorStatusCode.NOT_FOUND);
+      }
+
+      return httpResponse(req, res, EResponseStatusCode.OK, "Blog fetched", { blog: blog });
+    } catch (error) {
+      httpError(next, error, req);
+    }
   }
 };

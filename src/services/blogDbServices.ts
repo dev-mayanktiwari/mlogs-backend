@@ -126,6 +126,45 @@ export default {
         text
       }
     });
+  },
+
+  checkBlogAlreadySaved: (userId: string, blogId: number) => {
+    return prisma.savedPost.findUnique({
+      where: {
+        userId_postId: {
+          userId,
+          postId: blogId
+        }
+      }
+    });
+  },
+
+  saveBlogbyId: (userId: string, blogId: number) => {
+    return prisma.savedPost.create({
+      data: {
+        userId,
+        postId: blogId
+      }
+    });
+  },
+
+  unsaveBlogbyId: (userId: string, blogId: number) => {
+    return prisma.savedPost.delete({
+      where: {
+        userId_postId: {
+          userId,
+          postId: Number(blogId)
+        }
+      }
+    });
+  },
+
+  getTotalSaves: (blogId: number) => {
+    return prisma.savedPost.count({
+      where: {
+        postId: Number(blogId)
+      }
+    });
   }
 };
 
