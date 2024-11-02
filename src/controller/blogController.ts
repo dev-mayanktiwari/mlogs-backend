@@ -3,12 +3,21 @@ import httpResponse from "../utils/httpResponse";
 import { EErrorStatusCode, EResponseStatusCode } from "../constant/application";
 import httpError from "../utils/httpError";
 import blogDbServices from "../services/blogDbServices";
-import { ENTITY_NOT_FOUND } from "../constant/responseMessage";
+import { ENTITY_EXISTS, ENTITY_NOT_FOUND, EResponseMessage } from "../constant/responseMessage";
+import { IUser } from "../types/prismaUserTypes";
+import userAuthDbServices from "../services/userAuthDbServices";
 
 interface IFetchBlogs extends Request {
   query: {
     key?: string;
     cat?: string | string[];
+  };
+}
+
+interface ILikeBlog extends Request {
+  authenticatedUser: IUser;
+  params: {
+    blogId: string;
   };
 }
 
@@ -41,6 +50,39 @@ export default {
       return httpResponse(req, res, EResponseStatusCode.OK, "Blogs fetched successfully", { blogs });
     } catch (error) {
       return httpError(next, error, req);
+    }
+  },
+
+  like: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      // Validate body
+      const { authenticatedUser, params } = req as ILikeBlog;
+
+      // Find user
+      const user = await userAuthDbServices.findUserById(authenticatedUser.userId as string);
+      if (!user) {
+        return httpError(next, new Error(EResponseMessage.USER_NOT_FOUND), req, EErrorStatusCode.NOT_FOUND);
+      }
+
+      // Find blog
+      const blog = await blogDbServices.findBlogbyId(Number(params.blogId));
+      if (!blog) {
+        return httpError(next, new Error(ENTITY_NOT_FOUND("Blog")), req, EErrorStatusCode.NOT_FOUND);
+      }
+
+      // Check if already liked
+      const isAlreadyLiked = await blogDbServices.checkBlogAlreadyLiked(user.userId, Number(params.blogId));
+
+      if (isAlreadyLiked) {
+        return httpError(next, new Error(ENTITY_EXISTS("Like")), req, EErrorStatusCode.FORBIDDEN);
+      }
+
+      // Like the blog
+      await blogDbServices.likeBlogbyId(user.userId, Number(params.blogId));
+
+      httpResponse(req, res, EResponseStatusCode.OK, "Blog liked", {});
+    } catch (error) {
+      httpError(next, error, req);
     }
   }
 };

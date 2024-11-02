@@ -25,6 +25,34 @@ export default {
         ]
       }
     });
+  },
+
+  findBlogbyId: (id: number) => {
+    return prisma.post.findUnique({
+      where: {
+        postId: id
+      }
+    });
+  },
+
+  likeBlogbyId: (userId: string, blogId: number) => {
+    return prisma.like.create({
+      data: {
+        userId,
+        postId: blogId
+      }
+    });
+  },
+
+  checkBlogAlreadyLiked: (userId: string, blogId: number) => {
+    return prisma.like.findUnique({
+      where: {
+        userId_postId: {
+          userId,
+          postId: blogId
+        }
+      }
+    });
   }
 };
 
