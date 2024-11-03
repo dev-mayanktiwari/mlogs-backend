@@ -12,7 +12,8 @@ type ConfigKeys =
   | "REFRESH_TOKEN_SECRET"
   | "ACCESS_TOKEN_EXPIRY"
   | "REFRESH_TOKEN_EXPIRY"
-  | "DOMAIN";
+  | "DOMAIN"
+  | "MONGO_URL";
 
 const _config: Record<ConfigKeys, string | undefined> = {
   PORT: process.env.PORT,
@@ -25,7 +26,8 @@ const _config: Record<ConfigKeys, string | undefined> = {
   REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET,
   ACCESS_TOKEN_EXPIRY: process.env.ACCESS_TOKEN_EXPIRY,
   REFRESH_TOKEN_EXPIRY: process.env.REFRESH_TOKEN_EXPIRY,
-  DOMAIN: process.env.DOMAIN
+  DOMAIN: process.env.DOMAIN,
+  MONGO_URL: process.env.MONGO_URL
 };
 
 export const AppConfig = {

@@ -16,7 +16,7 @@ export const enum EResponseMessage {
   FORBIDDEN = "Forbidden request.",
   VALIDATION_ERROR = "Validation error.",
   SESSION_EXPIRED = "Session expired. Please log in again.",
-  TOO_MANY_REQUESTS = "Too many requests. Please try again later.",
+  AUTH_TOO_MANY_REQUESTS = "Too many requests. Please try again later after 5 minutes.",
   USERNAME_TAKEN = "Username is already taken.",
   INVALID_TOKEN_CODE = "The verification link is invalid.",
   ACCOUNT_ALREADY_VERIFIED = "Account is already verified.",

@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
 import { AppConfig } from "./config";
 import app from "./app";
 import logger from "./utils/logger";
+import mongodbConnectService from "./services/mongodbConnectService";
 
 const server = app.listen(AppConfig.get("PORT") || 3000, () => {
   logger.info("Server started", {
@@ -11,8 +13,19 @@ const server = app.listen(AppConfig.get("PORT") || 3000, () => {
   });
 });
 
-(() => {
+(async () => {
   try {
+
+    const connection = await mongodbConnectService.connect();
+    
+    logger.info("Connected to MongoDB", {
+      meta: {
+        host: connection.host,
+        port: connection.port,
+        name: connection.name
+      }
+    });
+
     logger.info("Server is running", {
       meta: {
         PORT: AppConfig.get("PORT"),

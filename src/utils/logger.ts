@@ -84,8 +84,8 @@ const mongoTransport = (): Array<MongoDBTransportInstance> => {
     return [
       new transports.MongoDB({
         level: "info",
-        db: AppConfig.get("DATABASE_URL") as string,
-        expireAfterSeconds: 60 * 60 * 24 * 7, // 7 days
+        db: AppConfig.get("MONGO_URL") as string,
+        expireAfterSeconds: 60 * 60 * 24 * 7 // 7 days
       })
     ];
   }
