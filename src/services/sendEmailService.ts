@@ -7,14 +7,16 @@ const passwordQueueName = "password-service-queue";
 const generalQueue = new Queue(generalQueueName, {
   connection: {
     host: AppConfig.get("REDIS_HOST") as string,
-    port: Number(AppConfig.get("REDIS_PORT"))
+    port: Number(AppConfig.get("REDIS_PORT")),
+    password: AppConfig.get("REDIS_PASSWORD") as string
   }
 });
 
 const passwordEmailQueue = new Queue(passwordQueueName, {
   connection: {
     host: AppConfig.get("REDIS_HOST") as string,
-    port: Number(AppConfig.get("REDIS_PORT"))
+    port: Number(AppConfig.get("REDIS_PORT")),
+    password: AppConfig.get("REDIS_PASSWORD") as string
   }
 });
 

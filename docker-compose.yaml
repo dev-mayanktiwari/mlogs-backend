@@ -1,0 +1,27 @@
+version: '1.0'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"  
+    environment:
+      ENV: ${ENV}
+      PORT: ${PORT}
+      SERVER_URL: ${SERVER_URL}
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      DOMAIN: ${DOMAIN}
+      DATABASE_URL: ${DATABASE_URL}
+      MONGO_URL: ${MONGO_URL}
+      ACCESS_TOKEN_SECRET: ${ACCESS_TOKEN_SECRET}
+      REFRESH_TOKEN_SECRET: ${REFRESH_TOKEN_SECRET}
+      ACCESS_TOKEN_EXPIRY: ${ACCESS_TOKEN_EXPIRY}
+      REFRESH_TOKEN_EXPIRY: ${REFRESH_TOKEN_EXPIRY}
+    volumes:
+      - .:/usr/src/mlogs-backend
+    
+
