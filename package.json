@@ -6,7 +6,7 @@
   "scripts": {
     "dist": "npx tsc",
     "dev": "nodemon src/server.ts",
-    "start": "node dist/server.js",
+    "start": "npx tsc && node dist/server.js",
     "lint": "eslint",
     "lint:fix": "eslint  --fix",
     "format:check": "prettier --check .",
