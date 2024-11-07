@@ -12,7 +12,7 @@ declare global {
 
 if (AppConfig.get("ENV") === "production") {
   prisma = new PrismaClient({
-    log: ["query", "info", "warn", "error"]
+    log: ["error"]
   });
 } else {
   if (!global.__prisma) {

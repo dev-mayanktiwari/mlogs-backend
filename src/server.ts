@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-floating-promises */
+ 
 import { AppConfig } from "./config";
 import app from "./app";
 import logger from "./utils/logger";
@@ -13,7 +13,7 @@ const server = app.listen(AppConfig.get("PORT") || 3000, () => {
   });
 });
 
-(async () => {
+(() => {
   try {
 
     const connection = await mongodbConnectService.connect();

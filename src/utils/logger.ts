@@ -68,15 +68,12 @@ const fileLogFormat = format.printf((info) => {
 });
 
 const consoleTransport = (): Array<ConsoleTransportInstance> => {
-  if (AppConfig.get("ENV") === EApplicationEnvirontment.DEVELOPMENT) {
-    return [
-      new transports.Console({
-        level: "info",
-        format: format.combine(format.timestamp(), consoleLogFormat)
-      })
-    ];
-  }
-  return [];
+  return [
+    new transports.Console({
+      level: "info",
+      format: format.combine(format.timestamp(), consoleLogFormat)
+    })
+  ];
 };
 
 const mongoTransport = (): Array<MongoDBTransportInstance> => {
