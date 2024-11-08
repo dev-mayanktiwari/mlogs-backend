@@ -1,0 +1,36 @@
+{
+  "info": {
+    "_postman_id": "1019a718-5d10-4063-a230-b0e9adc398a5",
+    "name": "Server Checkup",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "30889866"
+  },
+  "item": [
+    {
+      "name": "Self",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/checkup/self",
+          "host": ["{{baseUrl}}"],
+          "path": ["checkup", "self"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/checkup/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["checkup", "health"]
+        }
+      },
+      "response": []
+    }
+  ]
+}
