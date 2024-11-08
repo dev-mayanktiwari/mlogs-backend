@@ -1,0 +1,190 @@
+{
+  "info": {
+    "_postman_id": "57cc36b9-e2ad-47a3-816f-b7c95e4362ad",
+    "name": "User Authentication",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "30889866"
+  },
+  "item": [
+    {
+      "name": "User Register",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"name\": \"\",\n    \"email\": \"\",\n    \"username\": \"\",\n    \"password\":\"\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/user/auth/register",
+          "host": ["{{baseUrl}}"],
+          "path": ["user", "auth", "register"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Account Confirmation",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/user/auth/confirmation/:token?code=",
+          "host": ["{{baseUrl}}"],
+          "path": ["user", "auth", "confirmation", ":token"],
+          "query": [
+            {
+              "key": "code",
+              "value": ""
+            }
+          ],
+          "variable": [
+            {
+              "key": "token",
+              "value": ""
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"email\": \"\",\n    \"password\": \"\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/user/auth/login",
+          "host": ["{{baseUrl}}"],
+          "path": ["user", "auth", "login"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Self Identification",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/user/auth/self-identification",
+          "host": ["{{baseUrl}}"],
+          "path": ["user", "auth", "self-identification"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Logout",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/user/auth/logout",
+          "host": ["{{baseUrl}}"],
+          "path": ["user", "auth", "logout"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Refresh Token",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/user/auth/refresh-token",
+          "host": ["{{baseUrl}}"],
+          "path": ["user", "auth", "refresh-token"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Password Reset",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"email\": \"\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/user/auth/forgot-password",
+          "host": ["{{baseUrl}}"],
+          "path": ["user", "auth", "forgot-password"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Reset Password Confirmation",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"newPassword\": \"123456789\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/user/auth/reset-password/:token",
+          "host": ["{{baseUrl}}"],
+          "path": ["user", "auth", "reset-password", ":token"],
+          "variable": [
+            {
+              "key": "token",
+              "value": "d706e320-2c0d-46d2-ac61-d02c9f6006d8"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Change Password",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"oldPassword\": \"\",\n    \"newPassword\": \"\",\n    \"confirmNewPassword\": \"\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/user/auth/change-password",
+          "host": ["{{baseUrl}}"],
+          "path": ["user", "auth", "change-password"]
+        }
+      },
+      "response": []
+    }
+  ]
+}

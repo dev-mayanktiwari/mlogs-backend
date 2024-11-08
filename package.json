@@ -10,7 +10,7 @@
     "lint": "eslint",
     "lint:fix": "eslint  --fix",
     "format:check": "prettier --check .",
-    "format:fix": "prettier --fix .",
+    "format:fix": "prettier --write .",
     "prepare": "husky",
     "test": "jest",
     "build": "tsc"
