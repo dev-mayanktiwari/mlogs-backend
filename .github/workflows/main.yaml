@@ -12,11 +12,11 @@ jobs:
     steps:
 
       - name: Checkout the code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
    
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
 
@@ -37,8 +37,8 @@ jobs:
         run: npx prisma generate
 
       
-      - name: Build the project
-        run: npm run build
+      - name: Start the project
+        run: npm run start
 
 
       - name: Run tests
@@ -46,17 +46,18 @@ jobs:
 
 
       - name: Login to Docker
-        uses: docker/login-action@v1
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
  
       - name: Build and push Docker image
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: ./Dockerfile
+          platforms: linux/amd64, linux/arm64
           push: true
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/mlogs-final-backend:latest
