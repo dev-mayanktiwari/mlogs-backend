@@ -6,4 +6,3 @@ export default (nextFunction: NextFunction, err: Error | unknown, req: Request, 
   const errorObj = errorObject(err, req, errorStatusCode);
   return nextFunction(errorObj);
 };
-

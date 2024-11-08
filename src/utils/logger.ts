@@ -105,4 +105,3 @@ export default createLogger({
   },
   transports: [...fileTransport(), ...consoleTransport(), ...mongoTransport()]
 });
-

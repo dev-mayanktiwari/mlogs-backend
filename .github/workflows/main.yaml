@@ -10,40 +10,31 @@ jobs:
     name: Build the project
     runs-on: ubuntu-latest
     steps:
-
       - name: Checkout the code
         uses: actions/checkout@v4
 
-   
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-
+          node-version: "20"
 
       - name: Install dependencies
         run: npm install
 
- 
       - name: Run ESLint
         run: npm run lint
 
-  
       - name: Run Prettier
         run: npm run format:check
-
 
       - name: Generate prisma client
         run: npx prisma generate
 
-      
       - name: Start the project
         run: npm run start
 
-
       - name: Run tests
         run: npm run test
-
 
       - name: Login to Docker
         uses: docker/login-action@v3
@@ -51,7 +42,6 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
- 
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
@@ -63,7 +53,6 @@ jobs:
             ${{ secrets.DOCKER_USERNAME }}/mlogs-final-backend:latest
             ${{ secrets.DOCKER_USERNAME }}/mlogs-final-backend:${{ github.sha }}  # Using commit SHA for unique tagging
             ${{ secrets.DOCKER_USERNAME }}/mlogs-final-backend:${{ github.head_ref }}  # Using PR name as a tag (optional)
-
 
       - name: Verify the pushed image
         run: docker pull ${{ secrets.DOCKER_USERNAME }}/mlogs-final-backend:latest

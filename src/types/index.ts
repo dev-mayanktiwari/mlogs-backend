@@ -22,4 +22,3 @@ export type THTTPError = {
   data: null;
   trace?: object | null;
 };
-

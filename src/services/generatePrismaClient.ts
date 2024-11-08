@@ -1,5 +1,3 @@
- 
- 
 import { PrismaClient } from "@prisma/client";
 import { AppConfig } from "../config";
 
@@ -24,4 +22,3 @@ if (AppConfig.get("ENV") === "production") {
 }
 
 export default prisma;
-

@@ -21,4 +21,3 @@ export const generalRateLimiter = rateLimit({
     httpError(next, new Error(EResponseMessage.AUTH_TOO_MANY_REQUESTS), req, EErrorStatusCode.TOO_MANY_REQUESTS);
   }
 });
-

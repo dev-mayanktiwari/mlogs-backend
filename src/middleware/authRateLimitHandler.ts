@@ -10,4 +10,3 @@ export default async (req: Request, res: Response, next: NextFunction) => {
 
   await authLimiter(req, res, next);
 };
-

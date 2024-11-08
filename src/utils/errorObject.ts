@@ -32,4 +32,3 @@ export default (error: Error | unknown, req: Request, errorStatusCode: number = 
 
   return errorObject;
 };
-

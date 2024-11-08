@@ -12,8 +12,8 @@ blogRouter.delete("/:blogId/uncomment", blogController.uncomment);
 blogRouter.get("/:blogId/total-comments", blogController.getTotalComments);
 blogRouter.put("/:blogId/edit-comment", blogController.editComment);
 blogRouter.post("/:blogId/save", blogController.save);
-blogRouter.delete("/:blogId/unsave", blogController.unsave);   
-blogRouter.get("/:blogId/total-saves", blogController.totalSaves); 
+blogRouter.delete("/:blogId/unsave", blogController.unsave);
+blogRouter.get("/:blogId/total-saves", blogController.totalSaves);
 blogRouter.get("/:blogId/blog", blogController.getBlog);
 // Liking a blog
 // Commenting on a blog

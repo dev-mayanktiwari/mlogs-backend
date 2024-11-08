@@ -10,4 +10,3 @@ module.exports = {
   coverageDirectory: "coverage", // Output directory for test coverage
   collectCoverage: true // Enable test coverage collection
 };
-
