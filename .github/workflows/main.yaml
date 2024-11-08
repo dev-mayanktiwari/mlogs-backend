@@ -32,6 +32,7 @@ jobs:
 
       - name: Build the project
         run: npm run build
+      
       # - name: Start the project
       #   run: npm run start
 
@@ -52,7 +53,7 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: |
-            ${{ secrets.DOCKER_USERNAME }}/mlogs-final-backend:latest
+            ${{ secrets.DOCKER_USERNAME }}/mlogs-backend:latest
 
       - name: Verify the pushed image
         run: docker pull ${{ secrets.DOCKER_USERNAME }}/mlogs-final-backend:latest
