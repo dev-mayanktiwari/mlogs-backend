@@ -1,1 +1,1 @@
-npx lint-staged && prettier --write .
+npx lint-staged && npm run format:check
