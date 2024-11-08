@@ -22,7 +22,7 @@ app.use(express.json({ limit: "1mb" }));
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
-app.use("/api/v1/checkup", checkupRouter);
+app.use("/api/v1/user/checkup", checkupRouter);
 app.use("/api/v1/user/auth", authRateLimitHandler, authRouter);
 app.use("/api/v1/user/blog", generalRateLimitHandler, authMiddleware, blogRouter);
 
