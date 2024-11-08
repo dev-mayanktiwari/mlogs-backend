@@ -1,6 +1,7 @@
 module.exports = {
-  preset: "ts-jest", 
-  testEnvironment: "node", 
+  verbose: false,
+  preset: "ts-jest",
+  testEnvironment: "node",
   transform: {
     "^.+\\.tsx?$": "ts-jest"
   },
@@ -9,3 +10,4 @@ module.exports = {
   coverageDirectory: "coverage", // Output directory for test coverage
   collectCoverage: true // Enable test coverage collection
 };
+
