@@ -8,7 +8,7 @@
 
 MLOGS is a platform that puts you in control of your content and your data. Unlike typical blogging services, MLOGS is designed for flexibility, whether you're sharing personal stories, tutorials, or professional insights. With a focus on user-friendly design, scalability, and custom features, mlogs is built to grow alongside you.
 
-**Why mlogs?**
+Why MLOGS?
 
 - **Complete Ownership**: Host it yourself or use our hosting, with full control over your data and content.
 
