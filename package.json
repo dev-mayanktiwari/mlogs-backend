@@ -12,7 +12,8 @@
     "format:check": "prettier --check .",
     "format:fix": "prettier --fix .",
     "prepare": "husky",
-    "test": "jest"
+    "test": "jest",
+    "build": "tsc"
   },
   "keywords": [
     "production",
