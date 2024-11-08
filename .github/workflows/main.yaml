@@ -32,12 +32,12 @@ jobs:
 
       - name: Build the project
         run: npm run build
-      
+
       # - name: Start the project
       #   run: npm run start
 
-      # - name: Run tests
-      #   run: npm run test
+              # - name: Run tests
+              #   run: npm run test
 
       - name: Login to Docker
         uses: docker/login-action@v3
