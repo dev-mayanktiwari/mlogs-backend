@@ -53,8 +53,8 @@ jobs:
           push: true
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/mlogs-final-backend:latest
-            ${{ secrets.DOCKER_USERNAME }}/mlogs-final-backend:${{ github.sha }}  # Using commit SHA for unique tagging
-            ${{ secrets.DOCKER_USERNAME }}/mlogs-final-backend:${{ github.head_ref }}  # Using PR name as a tag (optional)
+            ${{ secrets.DOCKER_USERNAME }}/mlogs-final-backend:${{ github.sha }}  
+            ${{ secrets.DOCKER_USERNAME }}/mlogs-final-backend:${{ github.head_ref }}
 
       - name: Verify the pushed image
         run: docker pull ${{ secrets.DOCKER_USERNAME }}/mlogs-final-backend:latest
