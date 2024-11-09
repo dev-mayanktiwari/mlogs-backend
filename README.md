@@ -2,7 +2,7 @@
 
 -   [Project Overview](#project-overview)
 -   [Getting Started](#getting-started)
--   [System Design](#system-design)
+-   [Dependency Graph](#dependency-graph)
 -   [Development](#development)
     -   [Manual Setup](#manual-setup)
     -   [Setup using Docker](#setup-using-docker) 
@@ -45,6 +45,10 @@ Here is what you need to be able to run MLOGS.
 - Node.js (Version: >=20.x)
 - PostgreSQL (Version: >=13.x)
 - NPM
+
+## Dependency Graph
+
+![Backend Dependency Graph](./dependency-graph.svg)
 
 ## Development
 
