@@ -25,19 +25,19 @@ This policy applies to all individuals involved in the development, maintenance,
 
 Developers and contributors are responsible for:
 
--   Identifying and mitigating security risks.
--   Reporting vulnerabilities and security issues.
--   Following secure coding practices.
--   Keeping software dependencies up to date.
--   Collaborating on security-related tasks and concerns.
+- Identifying and mitigating security risks.
+- Reporting vulnerabilities and security issues.
+- Following secure coding practices.
+- Keeping software dependencies up to date.
+- Collaborating on security-related tasks and concerns.
 
 ### Users
 
 Users are responsible for:
 
--   Using strong, unique passwords.
--   Keeping their accounts secure.
--   Reporting security concerns or vulnerabilities.
+- Using strong, unique passwords.
+- Keeping their accounts secure.
+- Reporting security concerns or vulnerabilities.
 
 ## 4. Reporting Security Issues
 
@@ -47,32 +47,32 @@ If you discover a security issue or vulnerability, please report it to the MLOGS
 
 Upon receiving a report of a vulnerability:
 
--   The security team will assess and validate the issue.
--   An initial fix will be developed, and a patch will be released.
--   The security team will contact the reporter to confirm the resolution.
+- The security team will assess and validate the issue.
+- An initial fix will be developed, and a patch will be released.
+- The security team will contact the reporter to confirm the resolution.
 
 ## 6. Security Best Practices
 
 MLOGS adheres to the following security best practices:
 
--   Regular security assessments and audits.
--   Encryption of sensitive data.
--   Access controls and authentication mechanisms.
--   Secure code reviews.
--   Incident response planning and training.
--   Continuous monitoring for suspicious activity.
--   Regular security updates and patches.
+- Regular security assessments and audits.
+- Encryption of sensitive data.
+- Access controls and authentication mechanisms.
+- Secure code reviews.
+- Incident response planning and training.
+- Continuous monitoring for suspicious activity.
+- Regular security updates and patches.
 
 ## 7. Incident Response
 
 In the event of a security incident, the following steps will be taken:
 
--   Containment of the incident.
--   Analysis of the incident to determine its scope and impact.
--   Eradication of the threat.
--   Recovery of affected systems.
--   Communication with affected parties and stakeholders.
--   Documentation and post-incident review.
+- Containment of the incident.
+- Analysis of the incident to determine its scope and impact.
+- Eradication of the threat.
+- Recovery of affected systems.
+- Communication with affected parties and stakeholders.
+- Documentation and post-incident review.
 
 ## 8. Policy Updates
 

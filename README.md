@@ -1,15 +1,14 @@
 # MLOGS: Custom Blog Application for Everyone
 
--   [Project Overview](#project-overview)
--   [Getting Started](#getting-started)
--   [Dependency Graph](#dependency-graph)
--   [Development](#development)
-    -   [Manual Setup](#manual-setup)
-    -   [Setup using Docker](#setup-using-docker) 
--   [Testing](#testing)
--   [Contributing](#contributing)
--   [License](#license)
-
+- [Project Overview](#project-overview)
+- [Getting Started](#getting-started)
+- [Dependency Graph](#dependency-graph)
+- [Development](#development)
+  - [Manual Setup](#manual-setup)
+  - [Setup using Docker](#setup-using-docker)
+- [Testing](#testing)
+- [Contributing](#contributing)
+- [License](#license)
 
 ## Project Overview
 
@@ -32,7 +31,6 @@ Why MLOGS?
 - [Prisma.io](https://prisma.io/?ref=cal.com)
 - [Express](https://expressjs.com/)
 - [Zod](https://zod.dev/)
-
 
 ## Getting Started
 

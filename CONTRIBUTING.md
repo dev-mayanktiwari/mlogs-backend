@@ -4,18 +4,18 @@ Welcome to MLOGS, your ultimate blogging platform! We appreciate your interest i
 
 ## Table of Contents
 
--   [Code of Conduct](#code-of-conduct)
--   [How Can I Contribute?](#how-can-i-contribute)
-    -   [1. Reporting Bugs](#1-reporting-bugs)
-    -   [2. Suggesting Enhancements](#2-suggesting-enhancements)
-    -   [3. Pull Requests](#3-pull-requests)
--   [Setting Up the Development Environment](#setting-up-the-development-environment)
--   [Coding Guidelines](#coding-guidelines)
--   [Commit Message Guidelines](#commit-message-guidelines)
--   [Branching Strategy](#branching-strategy)
--   [Testing](#testing)
--   [Documentation](#documentation)
--   [Community](#community)
+- [Code of Conduct](#code-of-conduct)
+- [How Can I Contribute?](#how-can-i-contribute)
+  - [1. Reporting Bugs](#1-reporting-bugs)
+  - [2. Suggesting Enhancements](#2-suggesting-enhancements)
+  - [3. Pull Requests](#3-pull-requests)
+- [Setting Up the Development Environment](#setting-up-the-development-environment)
+- [Coding Guidelines](#coding-guidelines)
+- [Commit Message Guidelines](#commit-message-guidelines)
+- [Branching Strategy](#branching-strategy)
+- [Testing](#testing)
+- [Documentation](#documentation)
+- [Community](#community)
 
 ## Code of Conduct
 
@@ -27,17 +27,17 @@ Before you start contributing, please review our [Code of Conduct](./CODE_OF_CON
 
 If you encounter a bug or issue while using MLOGS, please report it using the [GitHub Issue Tracker](https://github.com/dev-mayanktiwari/mlogs-final/issues). When creating an issue, make sure to include:
 
--   A clear and descriptive title.
--   A detailed description of the bug, including steps to reproduce it.
--   Information about your environment, such as operating system, browser, and version.
+- A clear and descriptive title.
+- A detailed description of the bug, including steps to reproduce it.
+- Information about your environment, such as operating system, browser, and version.
 
 ### 2. Suggesting Enhancements
 
 If you have ideas for improvements or new features, you can suggest them by opening a new issue in the [GitHub Issue Tracker](https://github.com/dev-mayanktiwari/mlogs-final/issues). Please provide:
 
--   A clear and concise title.
--   A detailed description of your suggestion or enhancement.
--   Any relevant information that could help us understand and implement the idea.
+- A clear and concise title.
+- A detailed description of your suggestion or enhancement.
+- Any relevant information that could help us understand and implement the idea.
 
 ### 3. Pull Requests
 
@@ -61,26 +61,26 @@ To set up your development environment for MLOGS, follow the instructions in the
 
 Please follow our coding guidelines and maintain consistent code style to ensure code quality. These guidelines include:
 
--   Indentation and code formatting.
--   Naming conventions.
--   Comments and documentation.
--   Best practices for performance and security.
+- Indentation and code formatting.
+- Naming conventions.
+- Comments and documentation.
+- Best practices for performance and security.
 
 ## Commit Message Guidelines
 
 For clarity and maintainability, we follow specific commit message guidelines:
 
--   Start with a one-line summary in the present tense (e.g., "Add user profile functionality").
--   Provide a more detailed description in the following lines.
--   Reference issues, if applicable.
+- Start with a one-line summary in the present tense (e.g., "Add user profile functionality").
+- Provide a more detailed description in the following lines.
+- Reference issues, if applicable.
 
 ## Branching Strategy
 
 We use a branching strategy to manage code changes:
 
--   The `main` branch represents the stable release.
--   For features or bug fixes, create feature branches.
--   For hotfixes, create hotfix branches.
+- The `main` branch represents the stable release.
+- For features or bug fixes, create feature branches.
+- For hotfixes, create hotfix branches.
 
 ## Testing
 

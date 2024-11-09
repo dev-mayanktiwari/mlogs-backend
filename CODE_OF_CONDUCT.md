@@ -8,25 +8,25 @@ MLOGS is dedicated to providing an open, inclusive, and respectful environment f
 
 As a member of the MLOGS community, you are expected to:
 
--   Be respectful and considerate of others.
--   Welcome and support newcomers.
--   Encourage a diversity of opinions and ideas.
--   Use inclusive language and avoid offensive, harmful, or inappropriate comments.
--   Show empathy and respect towards other community members.
--   Prioritize constructive criticism over negative or unproductive feedback.
--   Resolve conflicts and disagreements through respectful communication.
+- Be respectful and considerate of others.
+- Welcome and support newcomers.
+- Encourage a diversity of opinions and ideas.
+- Use inclusive language and avoid offensive, harmful, or inappropriate comments.
+- Show empathy and respect towards other community members.
+- Prioritize constructive criticism over negative or unproductive feedback.
+- Resolve conflicts and disagreements through respectful communication.
 
 ## Unacceptable Behavior
 
 The following behaviors are considered unacceptable within the MLOGS community:
 
--   Discrimination or harassment based on race, gender, sexual orientation, religion, disability, or any other personal characteristics.
--   Any form of bullying, intimidation, or threats.
--   Offensive language, slurs, or personal attacks.
--   Posting or sharing content that is harmful, offensive, or inappropriate.
--   Violating others' privacy, including sharing personal information without consent.
--   Trolling or deliberately causing disruption.
--   Impersonation of others or using deceptive identities.
+- Discrimination or harassment based on race, gender, sexual orientation, religion, disability, or any other personal characteristics.
+- Any form of bullying, intimidation, or threats.
+- Offensive language, slurs, or personal attacks.
+- Posting or sharing content that is harmful, offensive, or inappropriate.
+- Violating others' privacy, including sharing personal information without consent.
+- Trolling or deliberately causing disruption.
+- Impersonation of others or using deceptive identities.
 
 ## Reporting Violations
 
@@ -42,9 +42,9 @@ If you believe that someone has violated this Code of Conduct, please follow the
 
 If a community member engages in behavior that violates this Code of Conduct, they may face the following consequences:
 
--   A warning or reprimand from the moderators.
--   Temporary or permanent removal from community platforms.
--   Reporting to appropriate authorities for illegal activities.
+- A warning or reprimand from the moderators.
+- Temporary or permanent removal from community platforms.
+- Reporting to appropriate authorities for illegal activities.
 
 ## Our Responsibility
 
