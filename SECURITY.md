@@ -13,11 +13,11 @@
 
 ## 1. Introduction
 
-This security policy outlines the measures, practices, and guidelines to ensure the security of the CodeGeekCentral project. The security of our platform is a top priority, and this policy is in place to protect our users' data and the integrity of our software.
+This security policy outlines the measures, practices, and guidelines to ensure the security of the MLOGS project. The security of our platform is a top priority, and this policy is in place to protect our users' data and the integrity of our software.
 
 ## 2. Scope
 
-This policy applies to all individuals involved in the development, maintenance, and use of the CodeGeekCentral platform, including developers, contributors, and users.
+This policy applies to all individuals involved in the development, maintenance, and use of the MLOGS platform, including developers, contributors, and users.
 
 ## 3. Responsibilities
 
@@ -41,7 +41,7 @@ Users are responsible for:
 
 ## 4. Reporting Security Issues
 
-If you discover a security issue or vulnerability, please report it to the CodeGeekCentral security team by emailing [mayanktiwari1212.mt@gmail.com](mailto:mayanktiwari1212.mt@gmail.com). Please include a detailed description of the issue, steps to reproduce, and any supporting information. We appreciate responsible disclosure and will address the issue promptly.
+If you discover a security issue or vulnerability, please report it to the MLOGS security team by emailing [mayanktiwari1212.mt@gmail.com](mailto:mayanktiwari1212.mt@gmail.com). Please include a detailed description of the issue, steps to reproduce, and any supporting information. We appreciate responsible disclosure and will address the issue promptly.
 
 ## 5. Vulnerability Handling
 
@@ -53,7 +53,7 @@ Upon receiving a report of a vulnerability:
 
 ## 6. Security Best Practices
 
-CodeGeekCentral adheres to the following security best practices:
+MLOGS adheres to the following security best practices:
 
 -   Regular security assessments and audits.
 -   Encryption of sensitive data.
