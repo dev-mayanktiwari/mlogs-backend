@@ -48,7 +48,7 @@ Here is what you need to be able to run MLOGS.
 
 ### Dependency Graph
 
-![Backend Dependency Graph](./dependency-graph.svg)
+![Backend Dependency Graph](./public/dependency-graph.svg)
 
 ## Development
 
