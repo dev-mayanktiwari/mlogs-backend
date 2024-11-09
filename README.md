@@ -1,10 +1,17 @@
-<h1 align="center"> MLOGS </h1>
+# MLOGS: Custom Blog Application for Everyone
 
-<!-- ABOUT THE PROJECT -->
+-   [Project Overview](#project-overview)
+-   [Getting Started](#getting-started)
+-   [System Design](#system-design)
+-   [Development](#development)
+    -   [Manual Setup](#manual-setup)
+    -   [Setup using Docker](#setup-using-docker) 
+-   [Testing](#testing)
+-   [Contributing](#contributing)
+-   [License](#license)
 
-## About the Project
 
-# Custom blog application for everyone.
+## Project Overview
 
 MLOGS is a platform that puts you in control of your content and your data. Unlike typical blogging services, MLOGS is designed for flexibility, whether you're sharing personal stories, tutorials, or professional insights. With a focus on user-friendly design, scalability, and custom features, mlogs is built to grow alongside you.
 
@@ -26,7 +33,6 @@ Why MLOGS?
 - [Express](https://expressjs.com/)
 - [Zod](https://zod.dev/)
 
-<!-- GETTING STARTED -->
 
 ## Getting Started
 
@@ -34,7 +40,7 @@ To get a local copy up and running, please follow these simple steps.
 
 ### Prerequisites
 
-Here is what you need to be able to run Cal.com.
+Here is what you need to be able to run MLOGS.
 
 - Node.js (Version: >=20.x)
 - PostgreSQL (Version: >=13.x)
@@ -305,3 +311,7 @@ Here is what you need to be able to run Cal.com.
 ## Contributing
 
 Please see our [contributing guide](/CONTRIBUTING.md).
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
