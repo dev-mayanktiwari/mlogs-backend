@@ -46,7 +46,7 @@ Here is what you need to be able to run MLOGS.
 - PostgreSQL (Version: >=13.x)
 - NPM
 
-## Dependency Graph
+### Dependency Graph
 
 ![Backend Dependency Graph](./dependency-graph.svg)
 
