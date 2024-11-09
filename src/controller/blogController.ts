@@ -272,6 +272,24 @@ export default {
     }
   },
 
+  fetchComments: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { params } = req as ICommentBlog;
+      const { blogId } = params;
+
+      const blog = await blogDbServices.findBlogbyId(Number(params.blogId));
+      if (!blog) {
+        return httpError(next, new Error(ENTITY_NOT_FOUND("Blog")), req, EErrorStatusCode.NOT_FOUND);
+      }
+
+      const comments = await blogDbServices.getComments(Number(blogId));
+
+      return httpResponse(req, res, EResponseStatusCode.OK, "Comments fetched", { comments });
+    } catch (error) {
+      httpError(next, error, req);
+    }
+  },
+
   save: async (req: Request, res: Response, next: NextFunction) => {
     try {
       // Validate body

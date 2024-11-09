@@ -165,5 +165,13 @@ export default {
         postId: Number(blogId)
       }
     });
+  },
+
+  getComments: (blogId: number) => {
+    return prisma.comment.findMany({
+      where: {
+        postId: Number(blogId)
+      }
+    });
   }
 };
