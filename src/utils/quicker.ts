@@ -46,8 +46,5 @@ export default {
   },
   generateExpirationTime: (minutes: number) => {
     return moment().add(minutes, "minutes").toISOString();
-  },
-  getDomain: (url: string) => {
-    return new URL(url).hostname;
   }
 };

@@ -12,7 +12,7 @@ type ConfigKeys =
   | "REFRESH_TOKEN_SECRET"
   | "ACCESS_TOKEN_EXPIRY"
   | "REFRESH_TOKEN_EXPIRY"
-  | "URL"
+  | "DOMAIN"
   | "MONGO_URL"
   | "REDIS_PASSWORD";
 
@@ -27,7 +27,7 @@ const _config: Record<ConfigKeys, string | undefined> = {
   REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET,
   ACCESS_TOKEN_EXPIRY: process.env.ACCESS_TOKEN_EXPIRY,
   REFRESH_TOKEN_EXPIRY: process.env.REFRESH_TOKEN_EXPIRY,
-  URL: process.env.DOMAIN,
+  DOMAIN: process.env.DOMAIN,
   MONGO_URL: process.env.MONGO_URL,
   REDIS_PASSWORD: process.env.REDIS_PASSWORD
 };

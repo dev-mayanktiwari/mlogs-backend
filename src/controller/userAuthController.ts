@@ -178,7 +178,7 @@ export default {
       res
         .cookie("accessToken", accessToken, {
           path: "/api/v1",
-          domain: quicker.getDomain(AppConfig.get("URL") as string),
+          domain: AppConfig.get("DOMAIN") as string,
           sameSite: "strict",
           httpOnly: true,
           secure: !(AppConfig.get("ENV") === "development"),
@@ -186,7 +186,7 @@ export default {
         })
         .cookie("refreshToken", refreshToken, {
           path: "/api/v1",
-          domain: AppConfig.get("URL") as string,
+          domain: AppConfig.get("DOMAIN") as string,
           sameSite: "strict",
           httpOnly: true,
           secure: !(AppConfig.get("ENV") === "development"),
@@ -222,7 +222,7 @@ export default {
       const clearAuthCookies = () => {
         const cookieOptions = {
           path: "/api/v1",
-          domain: AppConfig.get("URL") as string,
+          domain: AppConfig.get("DOMAIN") as string,
           sameSite: "strict" as const,
           httpOnly: true,
           secure: !(AppConfig.get("ENV") === "development"),
@@ -283,7 +283,7 @@ export default {
       // Set access token in cookies
       res.cookie("accessToken", newAccessToken, {
         path: "/api/v1",
-        domain: AppConfig.get("URL") as string,
+        domain: AppConfig.get("DOMAIN") as string,
         sameSite: "strict",
         httpOnly: true,
         secure: !(AppConfig.get("ENV") === "development"),
