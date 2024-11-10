@@ -63,7 +63,7 @@ Here is what you need to be able to run MLOGS.
 2. Go to the project folder
 
    ```sh
-   cd https://github.com/dev-mayanktiwari/mlogs-final
+   cd mlogs-final
    ```
 
 3. Install packages with npm
