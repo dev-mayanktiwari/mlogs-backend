@@ -70,9 +70,24 @@ Please follow our coding guidelines and maintain consistent code style to ensure
 
 For clarity and maintainability, we follow specific commit message guidelines:
 
-- Start with a one-line summary in the present tense (e.g., "Add user profile functionality").
-- Provide a more detailed description in the following lines.
-- Reference issues, if applicable.
+- Prefix with a suitable category, using lowercase:
+  - feat: For adding new features
+  - fix: For bug fixes
+  - chore: For routine tasks like maintenance or refactoring
+  - docs: For documentation changes
+  - style: For formatting, linting, or styling changes (no code changes)
+  - test: For adding or modifying tests
+  
+  Example: 
+    ```plaintext
+    feat: add user profile functionality
+    ```
+
+- **Use sentence case** for the commit message. Start with a concise, one-line summary in the present tense (e.g., feat: add login authentication).
+
+- **Avoid formatting errors** by ensuring that the codebase passes all linting, formatting, and validation checks before committing.
+
+- **Provide additional context** if necessary. After the summary line, leave a blank line and add a detailed description on the following lines.
 
 ## Branching Strategy
 
