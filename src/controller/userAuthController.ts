@@ -177,7 +177,7 @@ export default {
       // Set Cookie
       res
         .cookie("accessToken", accessToken, {
-          path: "/api/v1",
+          path: "/api/v1/user",
           domain: AppConfig.get("DOMAIN") as string,
           sameSite: "strict",
           httpOnly: true,
@@ -185,7 +185,7 @@ export default {
           maxAge: AppConfig.get("ACCESS_TOKEN_EXPIRY") as number
         })
         .cookie("refreshToken", refreshToken, {
-          path: "/api/v1",
+          path: "/api/v1/user",
           domain: AppConfig.get("DOMAIN") as string,
           sameSite: "strict",
           httpOnly: true,
@@ -221,7 +221,7 @@ export default {
       // Utility function to clear cookies
       const clearAuthCookies = () => {
         const cookieOptions = {
-          path: "/api/v1",
+          path: "/api/v1/user",
           domain: AppConfig.get("DOMAIN") as string,
           sameSite: "strict" as const,
           httpOnly: true,
@@ -282,7 +282,7 @@ export default {
 
       // Set access token in cookies
       res.cookie("accessToken", newAccessToken, {
-        path: "/api/v1",
+        path: "/api/v1/user",
         domain: AppConfig.get("DOMAIN") as string,
         sameSite: "strict",
         httpOnly: true,
