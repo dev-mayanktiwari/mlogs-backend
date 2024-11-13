@@ -30,7 +30,8 @@ export const enum EResponseMessage {
   TOKEN_REFRESHED = "Token refreshed.",
   PASSWORD_SAME = "New password must be different from the last password.",
   USER_NOT_FOUND = "User not found.",
-  BLOG_CREATED = "Blog created successfully."
+  BLOG_CREATED = "Blog created successfully.",
+  BLOG_UPDATED = "Blog updated successfully."
 }
 
 export const MIN_LENGTH_MESSAGE = (entity: string, length: number) => `${entity} must be ${length} characters long.`;
