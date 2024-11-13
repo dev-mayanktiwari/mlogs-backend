@@ -11,6 +11,9 @@ import blogRouter from "./router/blogRouter";
 import authMiddleware from "./middleware/authentication";
 import authRateLimitHandler from "./middleware/authRateLimitHandler";
 import generalRateLimitHandler from "./middleware/generalRateLimitHandler";
+import adminAuthRouter from "./router/adminAuthRouter";
+import adminAuthMiddleware from "./middleware/adminAuthentication";
+import adminBlogRouter from "./router/adminBlogRouter";
 
 const app: Application = express();
 
@@ -25,6 +28,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/v1/user/checkup", checkupRouter);
 app.use("/api/v1/user/auth", authRateLimitHandler, authRouter);
 app.use("/api/v1/user/blog", generalRateLimitHandler, authMiddleware, blogRouter);
+
+app.use("/api/v1/admin/auth", adminAuthRouter);
+app.use("/api/v1/admin/blog", adminAuthMiddleware, adminBlogRouter);
 
 //404 Handler
 app.use((req: Request, _: Response, next: NextFunction) => {

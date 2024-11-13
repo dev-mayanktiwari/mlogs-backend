@@ -50,3 +50,12 @@ export const sendPasswordChangeEmail = async (email: string, name: string) => {
     name
   });
 };
+
+export const sendBlogPostEmail = async (email: string[], blogId: number, blogTitle: string, blogHeadline: string) => {
+  await generalQueue.add("sendBlogPostEmail", {
+    email,
+    blogId,
+    blogTitle,
+    blogHeadline
+  });
+};

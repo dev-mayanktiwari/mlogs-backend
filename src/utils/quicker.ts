@@ -46,5 +46,8 @@ export default {
   },
   generateExpirationTime: (minutes: number) => {
     return moment().add(minutes, "minutes").toISOString();
+  },
+  verifyAdminToken: (token: string, secret: string) => {
+    return jwt.verify(token, secret);
   }
 };
