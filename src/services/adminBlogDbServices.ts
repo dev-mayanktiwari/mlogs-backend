@@ -55,5 +55,31 @@ export default {
         email: true
       }
     });
+  },
+
+  findBlogById: (postId: number) => {
+    return prisma.post.findUnique({
+      where: {
+        postId
+      }
+    });
+  },
+
+  updateBlog: (postId: number, title: string, content: string, headline: string, category: Category[]) => {
+    return prisma.post.update({
+      where: {
+        postId
+      },
+      data: {
+        title,
+        content,
+        headline,
+        categories: {
+          create: category.map((cat) => ({
+            categoryId: cat.id
+          }))
+        }
+      }
+    });
   }
 };

@@ -18,6 +18,18 @@ interface IPostBlog extends Request {
   };
 }
 
+interface IUpdateBlog extends Request {
+  body: {
+    title: string;
+    content: string;
+    headline: string;
+    category?: string[];
+  };
+  params: {
+    postId: string;
+  };
+}
+
 export default {
   postBlog: async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -46,6 +58,43 @@ export default {
 
       // Send the response
       return httpResponse(req, res, EResponseStatusCode.CREATED, EResponseMessage.BLOG_CREATED, connectedBlog);
+    } catch (error) {
+      httpError(next, error, req);
+    }
+  },
+
+  updateBlog: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      // Validate Blog body
+      const { body } = req as IUpdateBlog;
+      const parsed = postBlogSchema.safeParse(body);
+
+      if (!parsed.success) {
+        const errorMessage = parsed.error?.issues.map((issue) => issue.message).join(", ");
+        return httpError(next, new Error(errorMessage || "Invalid inputs"), req, EErrorStatusCode.BAD_REQUEST);
+      }
+
+      // Extract postId from the route parameters
+      const { postId } = req.params;
+      const { title, content, headline, category } = parsed.data;
+
+      // Find the existing blog
+      const existingBlog = await adminBlogDbServices.findBlogById(Number(postId));
+      if (!existingBlog) {
+        return httpError(next, new Error("Blog post not found"), req, EErrorStatusCode.NOT_FOUND);
+      }
+
+      // Update categories if provided
+      let categories: Category[] = [];
+      if (category) {
+        categories = await adminBlogDbServices.createCategory(category);
+      }
+
+      // Update the blog post
+      const updatedBlog = await adminBlogDbServices.updateBlog(Number(postId), title, content, headline, categories);
+
+      // Send the response
+      return httpResponse(req, res, EResponseStatusCode.OK, EResponseMessage.BLOG_UPDATED, updatedBlog);
     } catch (error) {
       httpError(next, error, req);
     }
