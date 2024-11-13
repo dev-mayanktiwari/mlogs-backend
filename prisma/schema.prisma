@@ -36,6 +36,7 @@ model Post {
   postId       Int              @id @default(autoincrement())
   title        String
   content      String
+  headline     String
   createdAt    DateTime         @default(now())
   updatedAt    DateTime?        @updatedAt
   authorName   String
@@ -47,7 +48,7 @@ model Post {
 
 model Category {
   id   Int              @id @default(autoincrement())
-  name String
+  name String           @unique
   post PostCategories[]
 }
 
