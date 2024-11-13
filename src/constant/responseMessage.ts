@@ -29,7 +29,8 @@ export const enum EResponseMessage {
   TIMEOUT = "URL timeout.",
   TOKEN_REFRESHED = "Token refreshed.",
   PASSWORD_SAME = "New password must be different from the last password.",
-  USER_NOT_FOUND = "User not found."
+  USER_NOT_FOUND = "User not found.",
+  BLOG_CREATED = "Blog created successfully."
 }
 
 export const MIN_LENGTH_MESSAGE = (entity: string, length: number) => `${entity} must be ${length} characters long.`;
