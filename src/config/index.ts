@@ -14,7 +14,9 @@ type ConfigKeys =
   | "REFRESH_TOKEN_EXPIRY"
   | "DOMAIN"
   | "MONGO_URL"
-  | "REDIS_PASSWORD";
+  | "REDIS_PASSWORD"
+  | "ADMIN_USERNAME"
+  | "ADMIN_PASSWORD";
 
 const _config: Record<ConfigKeys, string | undefined> = {
   PORT: process.env.PORT,
@@ -29,7 +31,9 @@ const _config: Record<ConfigKeys, string | undefined> = {
   REFRESH_TOKEN_EXPIRY: process.env.REFRESH_TOKEN_EXPIRY,
   DOMAIN: process.env.DOMAIN,
   MONGO_URL: process.env.MONGO_URL,
-  REDIS_PASSWORD: process.env.REDIS_PASSWORD
+  REDIS_PASSWORD: process.env.REDIS_PASSWORD,
+  ADMIN_USERNAME: process.env.ADMIN_USERNAME,
+  ADMIN_PASSWORD: process.env.ADMIN_PASSWORD
 };
 
 export const AppConfig = {
