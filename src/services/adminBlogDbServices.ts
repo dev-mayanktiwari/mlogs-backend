@@ -81,5 +81,13 @@ export default {
         }
       }
     });
+  },
+
+  deleteBlog: (postId: number) => {
+    return prisma.post.delete({
+      where: {
+        postId
+      }
+    });
   }
 };

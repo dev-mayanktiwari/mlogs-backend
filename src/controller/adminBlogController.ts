@@ -30,6 +30,12 @@ interface IUpdateBlog extends Request {
   };
 }
 
+interface IDeleteBlog extends Request {
+  params: {
+    postId: string;
+  };
+}
+
 export default {
   postBlog: async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -54,7 +60,7 @@ export default {
       // Send email to the users
       const userEmails = await adminBlogServices.getUserEmails();
       const emailList = userEmails.map((user) => user.email);
-      await sendBlogPostEmail(emailList, blog.postId, blog.title, blog.headline);
+      await sendBlogPostEmail(emailList, blog.postId, blog.title, String(blog.headline));
 
       // Send the response
       return httpResponse(req, res, EResponseStatusCode.CREATED, EResponseMessage.BLOG_CREATED, connectedBlog);
@@ -95,6 +101,27 @@ export default {
 
       // Send the response
       return httpResponse(req, res, EResponseStatusCode.OK, EResponseMessage.BLOG_UPDATED, updatedBlog);
+    } catch (error) {
+      httpError(next, error, req);
+    }
+  },
+
+  deleteBlog: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      // Extract postId from the route parameters
+      const { params } = req as IDeleteBlog;
+      const { postId } = params;
+      // Find the existing blog
+      const existingBlog = await adminBlogDbServices.findBlogById(Number(postId));
+      if (!existingBlog) {
+        return httpError(next, new Error("Blog post not found"), req, EErrorStatusCode.NOT_FOUND);
+      }
+
+      // Delete the blog post
+      await adminBlogDbServices.deleteBlog(Number(postId));
+
+      // Send the response
+      return httpResponse(req, res, EResponseStatusCode.OK, EResponseMessage.OPERATION_COMPLETED);
     } catch (error) {
       httpError(next, error, req);
     }
