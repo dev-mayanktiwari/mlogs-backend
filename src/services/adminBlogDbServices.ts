@@ -65,7 +65,7 @@ export default {
     });
   },
 
-  updateBlog: (postId: number, title: string, content: string, headline: string, category: Category[]) => {
+  updateBlog: (postId: number, title: string, content: string, headline: string) => {
     return prisma.post.update({
       where: {
         postId
@@ -73,12 +73,7 @@ export default {
       data: {
         title,
         content,
-        headline,
-        categories: {
-          create: category.map((cat) => ({
-            categoryId: cat.id
-          }))
-        }
+        headline
       }
     });
   },
@@ -90,4 +85,17 @@ export default {
       }
     });
   }
+
+  // deleteOldCategories: (postId: number, category: Category[]) => {
+  //   return prisma.category.delete({
+  //     where: {
+  //       postId_categoryId: {
+  //         postId,
+  //         categoryId: {
+  //           in: category.map((cat) => cat.id)
+  //         }
+  //       }
+  //     }
+  //   });
+  // }
 };

@@ -97,7 +97,13 @@ export default {
       }
 
       // Update the blog post
-      const updatedBlog = await adminBlogDbServices.updateBlog(Number(postId), title, content, headline, categories);
+      const updatedBlog: Post = await adminBlogDbServices.updateBlog(Number(postId), title, content, headline);
+
+      // Connect the blog with the category
+      if (categories.length > 0) {
+        // await adminBlogDbServices.deleteOldCategories(Number(postId));
+        await adminBlogDbServices.connectBlogWithCategory(Number(postId), categories);
+      }
 
       // Send the response
       return httpResponse(req, res, EResponseStatusCode.OK, EResponseMessage.BLOG_UPDATED, updatedBlog);

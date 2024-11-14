@@ -95,13 +95,11 @@ export default {
     });
   },
 
-  uncommentBlogbyId: (userId: string, blogId: number) => {
+  uncommentBlogbyId: (userId: string, commentId: number) => {
     return prisma.comment.delete({
       where: {
-        userId_postId: {
-          userId,
-          postId: Number(blogId)
-        }
+        userId,
+        commentId
       }
     });
   },
@@ -114,13 +112,10 @@ export default {
     });
   },
 
-  editComment: (userId: string, blogId: number, text: string) => {
+  editComment: (commentId: number, text: string) => {
     return prisma.comment.update({
       where: {
-        userId_postId: {
-          userId,
-          postId: Number(blogId)
-        }
+        commentId
       },
       data: {
         text
@@ -171,6 +166,15 @@ export default {
     return prisma.comment.findMany({
       where: {
         postId: Number(blogId)
+      }
+    });
+  },
+
+  findCommentbyId: (userId: string, commentId: number) => {
+    return prisma.comment.findUnique({
+      where: {
+        userId: userId,
+        commentId: commentId
       }
     });
   }
