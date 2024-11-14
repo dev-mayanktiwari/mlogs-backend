@@ -39,7 +39,7 @@ model Post {
   headline     String
   createdAt    DateTime         @default(now())
   updatedAt    DateTime?        @updatedAt
-  authorName   String
+  authorName   String           @default("Mayank")
   categories   PostCategories[]
   likes        Like[]
   comments     Comment[]
