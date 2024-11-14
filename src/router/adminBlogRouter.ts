@@ -3,7 +3,8 @@ import adminBlogController from "../controller/adminBlogController";
 
 const adminBlogRouter = Router();
 
-adminBlogRouter.get("/post-blog", adminBlogController.postBlog);
-adminBlogRouter.get("/update-blog/:postId", adminBlogController.updateBlog);
+adminBlogRouter.post("/post-blog", adminBlogController.postBlog);
+adminBlogRouter.put("/update-blog/:postId", adminBlogController.updateBlog);
+adminBlogRouter.delete("/delete-blog/:postId", adminBlogController.deleteBlog);
 
 export default adminBlogRouter;

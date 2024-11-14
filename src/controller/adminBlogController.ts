@@ -90,11 +90,11 @@ export default {
         return httpError(next, new Error("Blog post not found"), req, EErrorStatusCode.NOT_FOUND);
       }
 
-      // Update categories if provided
-      let categories: Category[] = [];
-      if (category) {
-        categories = await adminBlogDbServices.createCategory(category);
-      }
+      // Remove the categories if provided
+      await adminBlogDbServices.deleteOldCategories(Number(postId));
+
+      // Create new categories
+      const categories: Category[] = await adminBlogDbServices.createCategory(category);
 
       // Update the blog post
       const updatedBlog: Post = await adminBlogDbServices.updateBlog(Number(postId), title, content, headline);
@@ -122,6 +122,9 @@ export default {
       if (!existingBlog) {
         return httpError(next, new Error("Blog post not found"), req, EErrorStatusCode.NOT_FOUND);
       }
+
+      // Remove the categories
+      await adminBlogDbServices.deleteOldCategories(Number(postId));
 
       // Delete the blog post
       await adminBlogDbServices.deleteBlog(Number(postId));

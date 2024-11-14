@@ -73,7 +73,41 @@ export default {
       data: {
         title,
         content,
-        headline
+        headline,
+        authorName: "Mayank"
+      }
+    });
+  },
+
+  // updateBlog: (postId: number, title: string, content: string, headline: string, categoryNames: string[]) => {
+  //   await prisma.post.update({
+  //   where: { postId },
+  //   data: {
+  //     title,
+  //     content,
+  //     headline,
+  //     categories: {
+  //       create: categoryNames.map((name) => ({
+  //         category: {
+  //           connectOrCreate: {
+  //             where: { name },
+  //             create: { name },
+  //           },
+  //         },
+  //       })),
+  //     },
+  //   },
+  //   include: {
+  //     categories: {
+  //       include: { Category: true },
+  //     },
+  //   },
+  // }),
+
+  deleteOldCategories: (postId: number) => {
+    return prisma.postCategories.deleteMany({
+      where: {
+        postId
       }
     });
   },

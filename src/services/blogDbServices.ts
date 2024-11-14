@@ -23,6 +23,24 @@ export default {
             }
           }
         ]
+      },
+      select: {
+        postId: true,
+        title: true,
+        content: true,
+        headline: true,
+        authorName: true,
+        createdAt: true,
+        categories: {
+          select: {
+            Category: {
+              select: {
+                id: true,
+                name: true
+              }
+            }
+          }
+        }
       }
     });
   },
