@@ -14,6 +14,7 @@ import generalRateLimitHandler from "./middleware/generalRateLimitHandler";
 import adminAuthRouter from "./router/adminAuthRouter";
 import adminAuthMiddleware from "./middleware/adminAuthentication";
 import adminBlogRouter from "./router/adminBlogRouter";
+import fetchBlogRouter from "./router/fetchBlogRouter";
 
 const app: Application = express();
 
@@ -27,8 +28,8 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use("/api/v1/user/checkup", checkupRouter);
 app.use("/api/v1/user/auth", authRateLimitHandler, authRouter);
+app.use("/api/v1/blog/fetch", generalRateLimitHandler, fetchBlogRouter);
 app.use("/api/v1/user/blog", generalRateLimitHandler, authMiddleware, blogRouter);
-
 app.use("/api/v1/admin/auth", adminAuthRouter);
 app.use("/api/v1/admin/blog", adminAuthMiddleware, adminBlogRouter);
 

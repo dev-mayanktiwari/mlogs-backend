@@ -8,13 +8,6 @@ import { IUser } from "../types/prismaUserTypes";
 import userAuthDbServices from "../services/userAuthDbServices";
 import { blogCommentSchema } from "../types/blogTypes";
 
-interface IFetchBlogs extends Request {
-  query: {
-    key?: string;
-    cat?: string | string[];
-  };
-}
-
 interface ILikeBlog extends Request {
   authenticatedUser: IUser;
   params: {
@@ -43,37 +36,6 @@ interface IEditCommentBlog extends Request {
 }
 
 export default {
-  fetchBlogs: async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const { query } = req as IFetchBlogs;
-      const { key, cat } = query;
-
-      // Parse categories
-      let categoryArray: string[] = [];
-      if (cat) {
-        if (typeof cat === "string") {
-          if (cat.includes(",")) {
-            categoryArray = cat.split(",").map((category) => category.trim());
-          } else {
-            categoryArray = [cat.trim()];
-          }
-        }
-      }
-
-      // Handle search key
-      const searchKey = key?.trim() || ""; // Default to empty string if no key
-
-      const blogs = await blogDbServices.getBlogsbyIdandCat(searchKey, categoryArray);
-      if (!blogs || blogs.length === 0) {
-        return httpError(next, new Error(ENTITY_NOT_FOUND("Blog")), req, EErrorStatusCode.NOT_FOUND);
-      }
-
-      return httpResponse(req, res, EResponseStatusCode.OK, "Blogs fetched successfully", { blogs });
-    } catch (error) {
-      return httpError(next, error, req);
-    }
-  },
-
   like: async (req: Request, res: Response, next: NextFunction) => {
     try {
       // Validate body
@@ -366,22 +328,6 @@ export default {
       const totalSaves = await blogDbServices.getTotalSaves(Number(blogId));
 
       return httpResponse(req, res, EResponseStatusCode.OK, `Total saves: ${totalSaves}`, { saves: totalSaves });
-    } catch (error) {
-      httpError(next, error, req);
-    }
-  },
-
-  getBlog: async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const { params } = req as ILikeBlog;
-      const { blogId } = params;
-
-      const blog = await blogDbServices.findBlogbyId(Number(blogId));
-      if (!blog) {
-        return httpError(next, new Error(ENTITY_NOT_FOUND("Blog")), req, EErrorStatusCode.NOT_FOUND);
-      }
-
-      return httpResponse(req, res, EResponseStatusCode.OK, "Blog fetched", { blog: blog });
     } catch (error) {
       httpError(next, error, req);
     }
