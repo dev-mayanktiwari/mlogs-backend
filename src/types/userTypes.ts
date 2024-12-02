@@ -54,8 +54,16 @@ export const changePasswordSchema = z
     message: "Passwords do not match"
   });
 
+export const guestBookSchema = z.object({
+  message: z
+    .string()
+    .min(EUserTypeConstants.MIN_MESSAGE_LENGTH, MIN_LENGTH_MESSAGE("Message", EUserTypeConstants.MIN_MESSAGE_LENGTH))
+    .max(EUserTypeConstants.MAX_MESSAGE_LENGTH, MAX_LENGTH_MESSAGE("Message", EUserTypeConstants.MAX_MESSAGE_LENGTH).trim())
+});
+
 export type RegisterUserType = z.infer<typeof registerUserSchema>;
 export type LoginUserType = z.infer<typeof loginUserSchema>;
 export type ForgotPasswordType = z.infer<typeof forgotPasswordSchema>;
 export type ResetPasswordType = z.infer<typeof resetPasswordSchema>;
 export type ChangePasswordType = z.infer<typeof changePasswordSchema>;
+export type GuestBookType = z.infer<typeof guestBookSchema>;
