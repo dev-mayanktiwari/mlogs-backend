@@ -7,6 +7,7 @@ import { ENTITY_EXISTS, ENTITY_NOT_FOUND, EResponseMessage } from "../constant/r
 import { IUser } from "../types/prismaUserTypes";
 import userAuthDbServices from "../services/userAuthDbServices";
 import { blogCommentSchema } from "../types/blogTypes";
+import { guestBookSchema } from "../types/userTypes";
 
 interface ILikeBlog extends Request {
   authenticatedUser: IUser;
@@ -32,6 +33,13 @@ interface IEditCommentBlog extends Request {
   };
   params: {
     commentId: string;
+  };
+}
+
+interface IGuestBook extends Request {
+  authenticatedUser: IUser;
+  body: {
+    message: string;
   };
 }
 
@@ -328,6 +336,31 @@ export default {
       const totalSaves = await blogDbServices.getTotalSaves(Number(blogId));
 
       return httpResponse(req, res, EResponseStatusCode.OK, `Total saves: ${totalSaves}`, { saves: totalSaves });
+    } catch (error) {
+      httpError(next, error, req);
+    }
+  },
+
+  guestbook: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      // Validate body
+      const { body, authenticatedUser } = req as IGuestBook;
+      const parsed = guestBookSchema.safeParse(body);
+      if (!parsed.success) {
+        const errorMessage = parsed.error?.issues.map((issue) => issue.message).join(", ");
+        return httpError(next, new Error(errorMessage || "Invalid inputs"), req, EErrorStatusCode.BAD_REQUEST);
+      }
+
+      // Get the user
+      const user = await userAuthDbServices.findUserById(authenticatedUser.userId as string);
+      if (!user) {
+        return httpError(next, new Error(EResponseMessage.USER_NOT_FOUND), req, EErrorStatusCode.NOT_FOUND);
+      }
+
+      // Save the message
+      const message = await blogDbServices.saveGuestBookMessage(user.userId, parsed.data.message);
+
+      return httpResponse(req, res, EResponseStatusCode.OK, "Message saved", { message: message });
     } catch (error) {
       httpError(next, error, req);
     }
