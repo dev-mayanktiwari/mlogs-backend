@@ -242,5 +242,26 @@ export default {
         user: true
       }
     });
+  },
+
+  getGuestbookMessages: () => {
+    return prisma.userOnGuestBook.findMany({
+      include: {
+        user: {
+          select: {
+            userId: true,
+            username: true,
+            name: true,
+            email: true
+          }
+        },
+        guestbook: {
+          select: {
+            message: true,
+            createdAt: true
+          }
+        }
+      }
+    });
   }
 };

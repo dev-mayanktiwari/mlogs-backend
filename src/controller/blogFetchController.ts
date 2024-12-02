@@ -124,5 +124,14 @@ export default {
     } catch (error) {
       httpError(next, error, req, EErrorStatusCode.INTERNAL_SERVER_ERROR);
     }
+  },
+
+  getGuestbook: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const messages = await blogDbServices.getGuestbookMessages();
+      return httpResponse(req, res, EResponseStatusCode.OK, "Guestbook fetched successfully", { messages });
+    } catch (error) {
+      httpError(next, error, req);
+    }
   }
 };
