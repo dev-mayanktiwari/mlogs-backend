@@ -226,5 +226,21 @@ export default {
         commentId: commentId
       }
     });
+  },
+
+  saveGuestBookMessage: (userId: string, message: string) => {
+    return prisma.guestBook.create({
+      data: {
+        message,
+        user: {
+          create: {
+            userId: userId
+          }
+        }
+      },
+      include: {
+        user: true
+      }
+    });
   }
 };

@@ -14,6 +14,7 @@ blogRouter.put("/:commentId/edit-comment", blogController.editComment);
 blogRouter.post("/:blogId/save", blogController.save);
 blogRouter.delete("/:blogId/unsave", blogController.unsave);
 blogRouter.get("/:blogId/total-saves", blogController.totalSaves);
+blogRouter.post("/guestbook", blogController.guestbook);
 
 // Liking a blog
 // Commenting on a blog
