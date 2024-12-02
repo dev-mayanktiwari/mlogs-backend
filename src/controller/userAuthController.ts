@@ -179,7 +179,7 @@ export default {
         .cookie("accessToken", accessToken, {
           path: "/api/v1/user",
           domain: AppConfig.get("DOMAIN") as string,
-          sameSite: "strict",
+          sameSite: "lax",
           httpOnly: true,
           secure: !(AppConfig.get("ENV") === "development"),
           maxAge: AppConfig.get("ACCESS_TOKEN_EXPIRY") as number
@@ -187,7 +187,7 @@ export default {
         .cookie("refreshToken", refreshToken, {
           path: "/api/v1/user",
           domain: AppConfig.get("DOMAIN") as string,
-          sameSite: "strict",
+          sameSite: "lax",
           httpOnly: true,
           secure: !(AppConfig.get("ENV") === "development"),
           maxAge: AppConfig.get("REFRESH_TOKEN_EXPIRY") as number
@@ -195,8 +195,12 @@ export default {
 
       // Return response
       httpResponse(req, res, EResponseStatusCode.OK, EResponseMessage.LOGIN_SUCCESS, {
-        accessToken: `Bearer ${accessToken}`,
-        refreshToken: `Bearer ${refreshToken}`
+        user: {
+          userId: user.userId,
+          username: user.username,
+          email: user.email,
+          name: user.name
+        }
       });
     } catch (error) {
       httpError(next, error, req);
@@ -223,7 +227,7 @@ export default {
         const cookieOptions = {
           path: "/api/v1/user",
           domain: AppConfig.get("DOMAIN") as string,
-          sameSite: "strict" as const,
+          sameSite: "lax" as const,
           httpOnly: true,
           secure: !(AppConfig.get("ENV") === "development"),
           expires: new Date(0) // Expire immediately
@@ -284,7 +288,7 @@ export default {
       res.cookie("accessToken", newAccessToken, {
         path: "/api/v1/user",
         domain: AppConfig.get("DOMAIN") as string,
-        sameSite: "strict",
+        sameSite: "lax",
         httpOnly: true,
         secure: !(AppConfig.get("ENV") === "development"),
         maxAge: Number(AppConfig.get("ACCESS_TOKEN_EXPIRY")) // In milliseconds
