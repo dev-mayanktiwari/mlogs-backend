@@ -27,6 +27,7 @@ model User {
   accountConfirmation AccountConfirmation?
   refreshToken        RefreshToken?
   passwordRecovery    PasswordRecovery?
+  guestbook           UserOnGuestBook[]
 
   @@index([email])
   @@index([username])
@@ -121,4 +122,21 @@ model RefreshToken {
   user           User     @relation(fields: [userId], references: [userId])
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+}
+
+model GuestBook {
+  guestBookId Int               @id @default(autoincrement())
+  message     String
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  user        UserOnGuestBook[]
+}
+
+model UserOnGuestBook {
+  guestbook   GuestBook @relation(fields: [guestbookId], references: [guestBookId])
+  guestbookId Int
+  user        User      @relation(fields: [userId], references: [userId])
+  userId      String
+
+  @@id([guestbookId, userId])
 }
