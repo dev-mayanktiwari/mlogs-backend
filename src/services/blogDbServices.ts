@@ -40,7 +40,10 @@ export default {
               }
             }
           }
-        }
+        },
+        likes: true,
+        comments: true,
+        savedByUsers: true
       }
     });
   },
@@ -49,6 +52,18 @@ export default {
     return prisma.post.findUnique({
       where: {
         postId: id
+      },
+      select: {
+        postId: true,
+        title: true,
+        content: true,
+        headline: true,
+        createdAt: true,
+        updatedAt: true,
+        authorName: true,
+        likes: true,
+        comments: true,
+        savedByUsers: true
       }
     });
   },
@@ -184,6 +199,22 @@ export default {
     return prisma.comment.findMany({
       where: {
         postId: Number(blogId)
+      },
+      select: {
+        user: {
+          select: {
+            name: true,
+            userId: true,
+            email: true,
+            username: true
+          }
+        },
+        commentId: true,
+        userId: true,
+        postId: true,
+        text: true,
+        createdAt: true,
+        updatedAt: true
       }
     });
   },
