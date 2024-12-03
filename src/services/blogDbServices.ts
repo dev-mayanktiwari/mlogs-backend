@@ -263,5 +263,41 @@ export default {
         }
       }
     });
+  },
+
+  getUserForSelfIdentification: (userId: string) => {
+    return prisma.user.findUnique({
+      where: {
+        userId
+      },
+      select: {
+        userId: true,
+        email: true,
+        name: true,
+        username: true,
+        lastLoginAt: true,
+        savedPosts: {
+          include: {
+            post: true
+          }
+        },
+        likedPosts: {
+          include: {
+            post: true
+          }
+        },
+        comments: {
+          include: {
+            post: true
+          }
+        },
+        guestbook: {
+          include: {
+            guestbook: true
+          }
+        },
+        passwordRecovery: true
+      }
+    });
   }
 };

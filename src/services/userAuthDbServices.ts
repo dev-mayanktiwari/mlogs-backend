@@ -244,5 +244,20 @@ export default {
         expiry: null
       }
     });
+  },
+
+  updateLastPasswordChange: (id: string) => {
+    return prisma.user.update({
+      where: {
+        userId: id
+      },
+      data: {
+        passwordRecovery: {
+          update: {
+            lastResetAt: new Date()
+          }
+        }
+      }
+    });
   }
 };
