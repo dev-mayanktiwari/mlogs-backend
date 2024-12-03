@@ -86,10 +86,11 @@ model Comment {
 }
 
 model SavedPost {
-  userId String
-  user   User   @relation(fields: [userId], references: [userId], onDelete: Cascade)
-  postId Int
-  post   Post   @relation(fields: [postId], references: [postId], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  postId    Int
+  post      Post     @relation(fields: [postId], references: [postId], onDelete: Cascade)
+  createdAt DateTime @default(now())
 
   @@id([userId, postId])
 }
