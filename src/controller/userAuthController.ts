@@ -13,6 +13,7 @@ import { accountConfirmedEmail, sendPasswordChangeEmail, sendPasswordResetLink, 
 import { IUser } from "../types/prismaUserTypes";
 import { AppConfig } from "../config";
 import { IDecryptedToken } from "../middleware/authentication";
+import blogDbServices from "../services/blogDbServices";
 
 interface IConfirmRequest extends Request {
   params: {
@@ -207,10 +208,11 @@ export default {
     }
   },
 
-  selfIdentification: (req: Request, res: Response, next: NextFunction) => {
+  selfIdentification: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { authenticatedUser } = req as IAuthenticatedRequest;
-      httpResponse(req, res, EResponseStatusCode.OK, EResponseMessage.USER_FOUND, authenticatedUser);
+      const user = await blogDbServices.getUserForSelfIdentification(authenticatedUser.userId as string);
+      httpResponse(req, res, EResponseStatusCode.OK, EResponseMessage.USER_FOUND, { user });
     } catch (error) {
       httpError(next, error, req);
     }
@@ -444,6 +446,9 @@ export default {
       }
       // Updating DB
       await userAuthDbServices.changePasswordbyUserId(userId as string, hashedPassword);
+
+      // Update Last Password Change
+      await userAuthDbServices.updateLastPasswordChange(userId as string);
 
       // Sending Mail
       await sendPasswordChangeEmail(authenticatedUser.email as string, authenticatedUser.name as string);
