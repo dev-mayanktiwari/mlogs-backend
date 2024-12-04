@@ -15,6 +15,7 @@ import adminAuthRouter from "./router/adminAuthRouter";
 import adminAuthMiddleware from "./middleware/adminAuthentication";
 import adminBlogRouter from "./router/adminBlogRouter";
 import fetchBlogRouter from "./router/fetchBlogRouter";
+import { AppConfig } from "./config";
 
 const app: Application = express();
 
@@ -23,7 +24,7 @@ app.use(helmet());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: AppConfig.get("CORS_ORIGIN") as string,
     credentials: true
   })
 );

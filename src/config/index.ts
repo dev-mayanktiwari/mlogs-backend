@@ -16,6 +16,7 @@ type ConfigKeys =
   | "MONGO_URL"
   | "REDIS_PASSWORD"
   | "ADMIN_USERNAME"
+  | "CORS_ORIGIN"
   | "ADMIN_PASSWORD";
 
 const _config: Record<ConfigKeys, string | undefined> = {
@@ -33,7 +34,8 @@ const _config: Record<ConfigKeys, string | undefined> = {
   MONGO_URL: process.env.MONGO_URL,
   REDIS_PASSWORD: process.env.REDIS_PASSWORD,
   ADMIN_USERNAME: process.env.ADMIN_USERNAME,
-  ADMIN_PASSWORD: process.env.ADMIN_PASSWORD
+  ADMIN_PASSWORD: process.env.ADMIN_PASSWORD,
+  CORS_ORIGIN: process.env.CORS_ORIGIN
 };
 
 export const AppConfig = {
