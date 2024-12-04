@@ -24,6 +24,9 @@ export default {
           }
         ]
       },
+      orderBy: {
+        createdAt: "desc"
+      },
       select: {
         postId: true,
         title: true,
