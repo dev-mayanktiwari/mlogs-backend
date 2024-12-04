@@ -278,17 +278,35 @@ export default {
         lastLoginAt: true,
         savedPosts: {
           include: {
-            post: true
+            post: {
+              include: {
+                likes: true,
+                comments: true,
+                savedByUsers: true
+              }
+            }
           }
         },
         likedPosts: {
           include: {
-            post: true
+            post: {
+              include: {
+                likes: true,
+                comments: true,
+                savedByUsers: true
+              }
+            }
           }
         },
         comments: {
           include: {
-            post: true
+            post: {
+              include: {
+                likes: true,
+                comments: true,
+                savedByUsers: true
+              }
+            }
           }
         },
         guestbook: {
