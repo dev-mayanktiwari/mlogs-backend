@@ -46,7 +46,6 @@ export default {
 
       // Handle search key
       const searchKey = key?.trim() || ""; // Default to empty string if no key
-
       const blogs = await blogDbServices.getBlogsbyIdandCat(searchKey, categoryArray);
       if (!blogs || blogs.length === 0) {
         return httpError(next, new Error(ENTITY_NOT_FOUND("Blog")), req, EErrorStatusCode.NOT_FOUND);

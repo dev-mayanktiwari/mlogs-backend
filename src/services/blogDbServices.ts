@@ -11,17 +11,22 @@ export default {
               mode: "insensitive"
             }
           },
-          {
-            categories: {
-              some: {
-                Category: {
-                  name: {
-                    in: cat.length ? cat : undefined
+          // Only apply the category filter if `cat` is not empty
+          ...(cat.length > 0
+            ? [
+                {
+                  categories: {
+                    some: {
+                      Category: {
+                        name: {
+                          in: cat
+                        }
+                      }
+                    }
                   }
                 }
-              }
-            }
-          }
+              ]
+            : [])
         ]
       },
       orderBy: {
