@@ -269,10 +269,8 @@ export default {
       if (!refreshToken) {
         return httpError(next, new Error(EResponseMessage.NO_TOKEN_FOUND), req, EErrorStatusCode.UNAUTHORIZED);
       }
-
       // Verify the refresh token
       const { userId, email, username } = quicker.verifyToken(refreshToken, AppConfig.get("REFRESH_TOKEN_SECRET") as string) as IDecryptedToken;
-
       // Check if refresh token in DB matches
       const dbRefreshToken = await userAuthDbServices.getRefreshToken(userId);
       if (!dbRefreshToken || dbRefreshToken.token !== refreshToken) {
