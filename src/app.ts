@@ -19,6 +19,7 @@ import corsOptions from "./services/corsService";
 
 const app: Application = express();
 const allowedOrigins = corsOptions();
+
 // Middleware
 app.use(helmet());
 app.use(cookieParser());
